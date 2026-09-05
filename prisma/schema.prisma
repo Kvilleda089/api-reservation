@@ -1,0 +1,99 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider     = "prisma-client"
+  output       = "../src/generated/prisma"
+  moduleFormat = "cjs"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Role {
+  SUPER_ADMINISTRATOR
+  ADMINISTRATOR
+  COURT_MANAGER
+  CLEANING_STAFF
+  RECEPTIONIST
+}
+
+enum ReservationResource {
+  CANCHA_1
+  CANCHA_2
+  SALON
+}
+
+enum ReservationStatus {
+  PENDIENTE
+  CONFIRMADA
+  CANCELADA
+  FINALIZADA
+}
+
+model Employee {
+  id            String   @id @default(uuid()) @db.Uuid
+  firstName     String   @db.VarChar(150)
+  middleName    String   @db.VarChar(150)
+  surname       String   @db.VarChar(150)
+  secondSurname String   @db.VarChar(150)
+  email         String   @unique @db.VarChar(100)
+  username      String   @unique @db.VarChar(80)
+  password      String
+  role          Role
+  status        Boolean  @default(true)
+  hireDate      DateTime @db.Date
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@map("employee")
+}
+
+model Client {
+  id               String   @id @default(uuid()) @db.Uuid
+  firstName        String   @db.VarChar(150)
+  middleName       String?  @db.VarChar(150)
+  surname          String?  @db.VarChar(150)
+  secondSurname    String?  @db.VarChar(150)
+  email            String?  @unique @db.VarChar(100)
+  phoneNumber      String?  @db.VarChar(8)
+  dateRegistration DateTime @default(now()) @db.Date
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  reservations Reservation[]
+
+  @@map("client")
+}
+
+model Reservation {
+  id                  String              @id @default(uuid()) @db.Uuid
+  clientId            String              @db.Uuid
+  reservationResource ReservationResource
+  hour                DateTime            @db.Time(0)
+  totalReservation    Decimal             @db.Decimal(10, 2)
+  reservedHours       Int
+  status              ReservationStatus
+  reservationDate     DateTime            @db.Date
+  createdAt           DateTime            @default(now())
+  updatedAt           DateTime            @updatedAt
+
+  client   Client               @relation(fields: [clientId], references: [id])
+  deposits ReservationDeposit[]
+
+  @@map("reservation")
+}
+
+model ReservationDeposit {
+  id            String   @id @default(uuid()) @db.Uuid
+  reservationId String   @db.Uuid
+  amount        Decimal  @db.Decimal(10, 2)
+  createdAt     DateTime @default(now())
+
+  reservation Reservation @relation(fields: [reservationId], references: [id])
+
+  @@map("reservation_deposit")
+}
