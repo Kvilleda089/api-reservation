@@ -5,7 +5,7 @@ import { env } from './config/envs';
 
 async function bootstrap() {
 
-  const logger = new Logger('Reservaciones-API')
+  const logger = new Logger('Reservaciones API')
   const app = await NestFactory.create(AppModule);
 
 
