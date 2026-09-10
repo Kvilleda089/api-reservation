@@ -20,7 +20,7 @@ export class ChangePasswordHandler implements ICommandHandler<ChangePasswordComm
 
     async execute(command: ChangePasswordCommand): Promise<ResponseDto<EmployeeResponse>> {
         try {
-        
+
             const { id, changePassowrdDto } = command
             const result = await this.changePasswor(id, changePassowrdDto);
 
