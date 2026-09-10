@@ -1,5 +1,5 @@
-import { CommandHandler, ICommand, ICommandHandler } from "@nestjs/cqrs";
-import { UpdateClientCommand } from "../impl/update-cliente.command";
+import { CommandHandler, ICommandHandler } from "@nestjs/cqrs";
+import { UpdateClientCommand } from "../impl/update-client.command";
 import { handlePrismaError } from "src/database/helpers/prisma-error.handler";
 import { Logger, NotFoundException } from "@nestjs/common";
 import { PrismaService } from "src/database/prisma.service";
