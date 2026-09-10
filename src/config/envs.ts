@@ -1,5 +1,6 @@
 import 'dotenv/config';
 import * as joi from 'joi';
+import { StringValue } from 'ms';
 
 interface EnVars {
   PORT: number;
@@ -8,7 +9,7 @@ interface EnVars {
   POSTGRES_PASSWORD: string;
   POSTGRES_USER: string;
   JWT_SECRET: string;
-  JWT_EXPIRES_IN: number;
+  JWT_EXPIRES_IN: StringValue;
 }
 
 const envsSchema = joi
@@ -19,7 +20,7 @@ const envsSchema = joi
     POSTGRES_PASSWORD: joi.string().required(),
     POSTGRES_USER: joi.string().required(),
     JWT_SECRET: joi.string().required(),
-    JWT_EXPIRES_IN: joi.number().required(),
+    JWT_EXPIRES_IN: joi.string().required(),
 
   })
   .unknown(true);

@@ -1,11 +1,12 @@
-import { Body, Controller, Get, Param, Patch, Post, Query } from "@nestjs/common";
+import { Body, Controller, Get, Param, Patch, Post, Query, UseGuards } from "@nestjs/common";
 import { CommandBus, QueryBus } from "@nestjs/cqrs";
 import { ChangePasswordDto, CreateEmployeeDto, GetOneEmployeeFiltersDto, UpdateEmployeeDto } from "../domain/dto";
 import { ChangePasswordCommand, CreateEmployeeCommand, UpdateEmployeeCommand } from "../command/impl";
 import { PaginationDto } from "src/common/dto";
 import { GetAllEmployeeQuery, GetOneEmployeeByFiltersQuery } from "../query/impl";
+import { JwtAuthGuard } from "src/modules/auth/guard/jwt.auth.guard";
 
-
+@UseGuards(JwtAuthGuard)
 @Controller('employees')
 export class EmployeeController {
 
@@ -33,6 +34,7 @@ export class EmployeeController {
                 new UpdateEmployeeCommand(employeeId, data)
             )
     };
+
 
     @Get()
     getAllEmploye(@Query() paginationDto: PaginationDto){

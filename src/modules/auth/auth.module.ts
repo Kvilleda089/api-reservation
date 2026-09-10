@@ -4,6 +4,7 @@ import { AuthController } from './controller/auth.controller';
 import { AuthHandlers } from './command/handler';
 import { JwtModule } from '@nestjs/jwt';
 import { env } from 'src/config/envs';
+import { JwtStrategy } from './strategy/jwt.strategy';
 
 @Module({
 
@@ -18,7 +19,8 @@ import { env } from 'src/config/envs';
     
     ],
     providers:[
-        ...AuthHandlers
+        ...AuthHandlers,
+        JwtStrategy,
     ],
     controllers: [
         AuthController

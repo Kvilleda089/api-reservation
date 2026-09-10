@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Patch, Post, Query } from "@nestjs/common";
+import { Body, Controller, Get, Param, Patch, Post, Query, UseGuards } from "@nestjs/common";
 import { CommandBus, QueryBus } from "@nestjs/cqrs";
 import { ClientFilterDto, CreateClientDto, UpdateClientDto } from "../domain/dto";
 import { CreateClientCommand } from "../command/impl/create-client.command";
@@ -6,8 +6,9 @@ import { GetAllClientQuery } from "../query/impl/get-all-client.query";
 import { PaginationDto } from "src/common/dto";
 import { GetOneClientQuery } from "../query/impl/get-one-client.query";
 import { UpdateClientCommand } from "../command/impl/update-client.command";
+import { JwtAuthGuard } from "src/modules/auth/guard/jwt.auth.guard";
 
-
+@UseGuards(JwtAuthGuard)
 @Controller('clients')
 export class ClientController {
 

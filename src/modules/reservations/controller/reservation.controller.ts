@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Patch, Post, Query } from "@nestjs/common";
+import { Body, Controller, Get, Param, Patch, Post, Query, UseGuards } from "@nestjs/common";
 import { CommandBus, QueryBus } from "@nestjs/cqrs";
 import { CreateReservationDto } from "../domain/dto/create-reservation.dto";
 import { CreateReservationCommand } from "../command/impl/create-reservation.command";
@@ -9,8 +9,9 @@ import { UpdateReservationCommand } from "../command/impl/update-reservation.com
 import { PaginationDto } from "src/common/dto";
 import { GetAllReservationQuery } from "../query/query/get-all-reservation.query";
 import { GetReservationByClientIdQuery } from "../query/query/get-reservation-by-clientId.query";
+import { JwtAuthGuard } from "src/modules/auth/guard/jwt.auth.guard";
 
-
+@UseGuards(JwtAuthGuard)
 @Controller('reservations')
 export class ReservationController {
 
