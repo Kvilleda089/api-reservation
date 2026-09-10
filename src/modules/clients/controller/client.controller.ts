@@ -5,7 +5,7 @@ import { CreateClientCommand } from "../command/impl/create-client.command";
 import { GetAllClientQuery } from "../query/impl/get-all-client.query";
 import { PaginationDto } from "src/common/dto";
 import { GetOneClientQuery } from "../query/impl/get-one-client.query";
-import { UpdateClientCommand } from "../command/impl/update-cliente.command";
+import { UpdateClientCommand } from "../command/impl/update-client.command";
 
 
 @Controller('clients')

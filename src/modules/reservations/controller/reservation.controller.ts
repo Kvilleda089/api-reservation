@@ -49,10 +49,10 @@ export class ReservationController {
     }
 
     
-    @Patch('/client/:id')
-    updateReservationByClientId(@Param('id') clientId: string, @Body() data: UpdateReservationDto) {
+    @Patch(':id')
+    updateReservationByClientId(@Param('id') id: string, @Body() data: UpdateReservationDto) {
         return this.commandBus.execute(
-            new UpdateReservationCommand(clientId, data)
+            new UpdateReservationCommand(id, data)
         )
     }
 }
