@@ -1,8 +1,8 @@
-import { CreateClienteHandler } from "./handler/create-cliente.handler";
+import { CreateClientHandler } from "./handler/create-client.handler";
 import { UpdateClientHandler } from "./handler/update-client.handler";
 
 
 export const ClientHandler = [
-    CreateClienteHandler,
+    CreateClientHandler,
     UpdateClientHandler,
 ]
