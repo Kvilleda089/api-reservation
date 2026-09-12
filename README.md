@@ -149,7 +149,7 @@ Crea tu archivo `.env` local a partir de `.env.example` y configura los valores 
 
 La API forma parte de una arquitectura que contempla una aplicación web, una aplicación móvil y diferentes microservicios.
 
-![Diagrama de arquitectura]()
+![Diagrama de arquitectura](./docs/ReservaFacil-Diagrama%20Arquitectura%20-%20API%20%20RESERVATION.jpg)
 
 ### Componentes principales
 
