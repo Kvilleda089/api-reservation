@@ -1,5 +1,5 @@
 import { IsDate, IsEmail, IsEnum, IsNotEmpty, IsOptional, IsString } from "class-validator";
-import { RoleEnum } from "../enum/role.enum";
+import { RoleEnum } from "../../../../common/enum/role.enum";
 import { Type } from "class-transformer";
 
 

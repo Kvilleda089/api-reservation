@@ -5,6 +5,7 @@ import { ClientsModule } from './modules/clients/clients.module';
 import { EmployeeModule } from './modules/employee/employee.module';
 import { ReservationDepositModule } from './modules/reservation-deposit/reservation-deposit.module';
 import { PrismaModule } from './database/prisma.module';
+import { AuthModule } from './modules/auth/auth.module';
 
 
 @Module({
@@ -14,7 +15,8 @@ import { PrismaModule } from './database/prisma.module';
     ReservationsModule, 
     ClientsModule, 
     EmployeeModule, 
-    ReservationDepositModule],
+    ReservationDepositModule, 
+    AuthModule],
   controllers: [],
   providers: [],
 })
