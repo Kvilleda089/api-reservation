@@ -5,7 +5,7 @@ import { LoginCommand } from "../impl";
 import { BadRequestException, Logger } from "@nestjs/common";
 import { PrismaService } from "src/database/prisma.service";
 import { LoginDto, LoginResponseDto } from "../../domain/dto";
-import { RoleEnum } from "src/modules/employee/domain/enum/role.enum";
+import { RoleEnum } from "src/common/enum/role.enum";
 import { handlePrismaError } from "src/database/helpers/prisma-error.handler";
 
 

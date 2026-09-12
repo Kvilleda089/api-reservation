@@ -1,4 +1,4 @@
-import { RoleEnum } from "src/modules/employee/domain/enum/role.enum";
+import { RoleEnum } from "src/common/enum/role.enum";
 
 
 export class LoginResponseDto {

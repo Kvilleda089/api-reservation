@@ -1,4 +1,4 @@
-import { RoleEnum } from "../enum/role.enum";
+import { RoleEnum } from "../../../../common/enum/role.enum";
 import { IsBoolean, IsEmail, IsEnum, IsOptional, IsString } from "class-validator";
 
 

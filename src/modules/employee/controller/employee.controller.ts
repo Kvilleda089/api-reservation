@@ -4,7 +4,9 @@ import { ChangePasswordDto, CreateEmployeeDto, GetOneEmployeeFiltersDto, UpdateE
 import { ChangePasswordCommand, CreateEmployeeCommand, UpdateEmployeeCommand } from "../command/impl";
 import { PaginationDto } from "src/common/dto";
 import { GetAllEmployeeQuery, GetOneEmployeeByFiltersQuery } from "../query/impl";
-import { JwtAuthGuard } from "src/modules/auth/guard/jwt.auth.guard";
+import { Roles } from "src/modules/auth/decorator/roles.decorator";
+import { RoleEnum } from "src/common/enum/role.enum";
+import { JwtAuthGuard, RolesGuard } from "src/modules/auth/guard";
 
 @UseGuards(JwtAuthGuard)
 @Controller('employees')
@@ -17,7 +19,8 @@ export class EmployeeController {
 
     ) { }
 
-
+    @UseGuards(RolesGuard)
+    @Roles(RoleEnum.SUPER_ADMINISTRATOR)
     @Post()
     createEmployee(@Body() data: CreateEmployeeDto) {
         return this.commandBus.execute(
@@ -25,7 +28,8 @@ export class EmployeeController {
         )
     };
 
-
+    @UseGuards(RolesGuard)
+    @Roles(RoleEnum.SUPER_ADMINISTRATOR)
     @Patch(':id')
     updateEmployee(@Param('id') employeeId: string,
         @Body() data: UpdateEmployeeDto) {
@@ -35,7 +39,8 @@ export class EmployeeController {
             )
     };
 
-
+    @UseGuards(RolesGuard)
+    @Roles(RoleEnum.SUPER_ADMINISTRATOR)
     @Get()
     getAllEmploye(@Query() paginationDto: PaginationDto){
         return this.queryBus.execute(
@@ -43,6 +48,8 @@ export class EmployeeController {
         )
     };
 
+    @UseGuards(RolesGuard)
+    @Roles(RoleEnum.SUPER_ADMINISTRATOR)
     @Get('one')
     getOneEmploye(@Query() filters: GetOneEmployeeFiltersDto) {
         return this.queryBus.execute(

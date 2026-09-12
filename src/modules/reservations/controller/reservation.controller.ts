@@ -10,6 +10,9 @@ import { PaginationDto } from "src/common/dto";
 import { GetAllReservationQuery } from "../query/query/get-all-reservation.query";
 import { GetReservationByClientIdQuery } from "../query/query/get-reservation-by-clientId.query";
 import { JwtAuthGuard } from "src/modules/auth/guard/jwt.auth.guard";
+import { Roles } from "src/modules/auth/decorator/roles.decorator";
+import { RolesGuard } from "src/modules/auth/guard";
+import { RoleEnum } from "src/common/enum/role.enum";
 
 @UseGuards(JwtAuthGuard)
 @Controller('reservations')
@@ -21,6 +24,11 @@ export class ReservationController {
         private readonly queryBus: QueryBus,
     ) { }
 
+    @UseGuards(RolesGuard)
+    @Roles(
+            RoleEnum.SUPER_ADMINISTRATOR,
+            RoleEnum.ADMINISTRATOR
+        )
     @Post()
     createReservation(@Body() data: CreateReservationDto) {
         return this.commandBus.execute(
@@ -28,6 +36,11 @@ export class ReservationController {
         );
     };
 
+    @UseGuards(RolesGuard)
+    @Roles(
+        RoleEnum.SUPER_ADMINISTRATOR,
+        RoleEnum.ADMINISTRATOR
+    )
     @Get()
     getAllReservation(@Query() paginationDto: PaginationDto){
         return this.queryBus.execute(
@@ -35,6 +48,11 @@ export class ReservationController {
         )
     }
 
+    @UseGuards(RolesGuard)
+    @Roles(
+        RoleEnum.SUPER_ADMINISTRATOR,
+        RoleEnum.ADMINISTRATOR
+    )
     @Get('available')
     getReservationAvailable(@Query() filters: GetReservationAvailableDto) {
         return this.queryBus.execute(
@@ -42,6 +60,8 @@ export class ReservationController {
         );
     }  
 
+     @UseGuards(RolesGuard)
+    @Roles(RoleEnum.SUPER_ADMINISTRATOR)
     @Get('/client/:id')
     getReservationClientById(@Param('id') clientId: string, @Query() paginationDto: PaginationDto) {
         return this.queryBus.execute(
@@ -49,7 +69,11 @@ export class ReservationController {
         )
     }
 
-    
+    @UseGuards(RolesGuard)
+    @Roles(
+        RoleEnum.SUPER_ADMINISTRATOR,
+        RoleEnum.ADMINISTRATOR
+    )
     @Patch(':id')
     updateReservationByClientId(@Param('id') id: string, @Body() data: UpdateReservationDto) {
         return this.commandBus.execute(
