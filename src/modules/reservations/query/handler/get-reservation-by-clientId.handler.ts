@@ -1,5 +1,5 @@
 import { IQueryHandler, QueryHandler } from "@nestjs/cqrs";
-import { GetReservationByClientIdQuery } from "../query/get-reservation-by-clientId.query";
+import { GetReservationByClientIdQuery } from "../imp/get-reservation-by-clientId.query";
 import { PrismaService } from "src/database/prisma.service";
 import { Logger, NotFoundException } from "@nestjs/common";
 import { PaginationDto, ResponseDto } from "src/common/dto";

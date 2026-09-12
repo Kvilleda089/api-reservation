@@ -6,7 +6,7 @@ import { CreateReservationDto } from "../../domain/dto/create-reservation.dto";
 import { Reservation } from "src/generated/prisma/client";
 import { handlePrismaError } from "src/database/helpers/prisma-error.handler";
 import { ResponseDto } from "src/common/dto";
-import { GetReservationAvailableQuery } from "../../query/query/get-reservation-checkout-available.query";
+import { GetReservationCheckoutAvailableQuery } from "../../query/imp/get-reservation-checkout-available.query";
 import { GetReservationAvailableDto } from "../../domain/dto/get-reservation-available.dto";
 
 
@@ -64,7 +64,7 @@ export class CreateReservationHandler implements ICommandHandler<CreateReservati
 
         //Validamos si está disponible, si devuelve data[] disponible si devuelve 1, no esta disponbiel y no se crea. 
         const reservationAvailable = await this.queryBus.execute(
-            new GetReservationAvailableQuery(filters)
+            new GetReservationCheckoutAvailableQuery(filters)
         );
 
         if (reservationAvailable.data.length > 0) {

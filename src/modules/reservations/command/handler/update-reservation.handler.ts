@@ -7,7 +7,7 @@ import { Reservation } from "src/generated/prisma/client";
 import { handlePrismaError } from "src/database/helpers/prisma-error.handler";
 import { ResponseDto } from "src/common/dto";
 import { GetReservationAvailableDto } from "../../domain/dto/get-reservation-available.dto";
-import { GetReservationAvailableQuery } from "../../query/query/get-reservation-checkout-available.query";
+import { GetReservationCheckoutAvailableQuery } from "../../query/imp/get-reservation-checkout-available.query";
 import { ReservationResourceEnum, StatusReservationEnum } from "../../domain/enum";
 
 @CommandHandler(UpdateReservationCommand)
@@ -78,7 +78,7 @@ export class UpdateReservationHandler implements ICommandHandler<UpdateReservati
         if (hasAvailabilityChange &&
             data.status !== StatusReservationEnum.CANCELADA) {
             const reservationAvailable = await this.queryBus.execute(
-                new GetReservationAvailableQuery(filters)
+                new GetReservationCheckoutAvailableQuery(filters)
             );
 
             if (reservationAvailable.data.length > 0) {
