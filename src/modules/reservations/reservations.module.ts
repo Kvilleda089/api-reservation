@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { PrismaModule } from 'src/database/prisma.module';
-import { ReservationHadler } from './command/handler';
+import { ReservationCommandHadler } from './command/handler';
 import { ReservationController } from './controller/reservation.controller';
 import { ReservationQueryHandlers } from './query/handler';
 
@@ -8,7 +8,7 @@ import { ReservationQueryHandlers } from './query/handler';
     imports: [PrismaModule,],
     controllers:[ReservationController],
     providers:[
-        ...ReservationHadler,
+        ...ReservationCommandHadler,
         ...ReservationQueryHandlers,
     ]
 })

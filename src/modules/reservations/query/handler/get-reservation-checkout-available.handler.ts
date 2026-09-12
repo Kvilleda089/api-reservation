@@ -1,5 +1,5 @@
 import { IQueryHandler, QueryHandler } from "@nestjs/cqrs";
-import { GetReservationAvailableQuery } from "../query/get-reservation-checkout-available.query";
+import { GetReservationCheckoutAvailableQuery } from "../imp/get-reservation-checkout-available.query";
 import { Logger } from "@nestjs/common";
 import { PrismaService } from "src/database/prisma.service";
 import { handlePrismaError } from "src/database/helpers/prisma-error.handler";
@@ -9,8 +9,8 @@ import { StatusReservationEnum } from "../../domain/enum";
 import { ResponseDto } from "src/common/dto";
 
 
-@QueryHandler(GetReservationAvailableQuery)
-export class GetReservationCheckoutAvailableHandler implements IQueryHandler<GetReservationAvailableQuery> {
+@QueryHandler(GetReservationCheckoutAvailableQuery)
+export class GetReservationCheckoutAvailableHandler implements IQueryHandler<GetReservationCheckoutAvailableQuery> {
 
 
     private readonly logger = new Logger('GetReservationCheckoutAvailableHandler')
@@ -19,7 +19,7 @@ export class GetReservationCheckoutAvailableHandler implements IQueryHandler<Get
         private readonly prismaService: PrismaService,
     ) { }
 
-    async execute(query: GetReservationAvailableQuery): Promise<ResponseDto<Reservation[]>> {
+    async execute(query: GetReservationCheckoutAvailableQuery): Promise<ResponseDto<Reservation[]>> {
         try {
             const result = await this.getReservationAvailable(query.filters);
 
