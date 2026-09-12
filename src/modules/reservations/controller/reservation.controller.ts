@@ -1,6 +1,5 @@
 import { Body, Controller, Get, Param, Patch, Post, Query, UseGuards } from "@nestjs/common";
 import { CommandBus, QueryBus } from "@nestjs/cqrs";
-import { CreateReservationDto } from "../domain/dto/create-reservation.dto";
 import { CreateReservationCommand } from "../command/impl/create-reservation.command";
 import { GetReservationAvailableDto } from "../domain/dto/get-reservation-available.dto";
 import { UpdateReservationDto } from "../domain/dto/update-reservaton.dto";
@@ -14,6 +13,7 @@ import { GetAllReservationQuery } from "../query/imp/get-all-reservation.query";
 import { GetReservationCheckoutAvailableQuery } from "../query/imp/get-reservation-checkout-available.query";
 import { GetReservationByClientIdQuery } from "../query/imp/get-reservation-by-clientId.query";
 import { GetAgendaQuery } from "../query/imp/get-agenda.query";
+import { CreateReservationDataDto } from "../domain/dto/create-reservation-data.dto";
 @UseGuards(JwtAuthGuard)
 @Controller('reservations')
 export class ReservationController {
@@ -30,7 +30,7 @@ export class ReservationController {
             RoleEnum.ADMINISTRATOR
         )
     @Post()
-    createReservation(@Body() data: CreateReservationDto) {
+    createReservation(@Body() data: CreateReservationDataDto) {
         return this.commandBus.execute(
             new CreateReservationCommand(data)
         );

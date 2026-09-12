@@ -1,4 +1,4 @@
-import { IsDate, IsEnum, IsNotEmpty, IsNumber, IsString } from "class-validator";
+import { IsDate, IsEnum, IsNotEmpty, IsNumber, IsOptional, IsString } from "class-validator";
 import { ReservationResourceEnum, StatusReservationEnum } from "../enum";
 import { Type } from "class-transformer";
 
@@ -6,8 +6,8 @@ import { Type } from "class-transformer";
 export class CreateReservationDto {
 
     @IsString()
-    @IsNotEmpty()
-    clientId: string;
+    @IsOptional()
+    clientId?: string;
 
     @IsString()
     @IsNotEmpty()

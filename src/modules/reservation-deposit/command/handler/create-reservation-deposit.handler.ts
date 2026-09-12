@@ -74,7 +74,7 @@ export class CreateReservationDepositHandler implements ICommandHandler<CreateRe
 
         const reservationDesposit = await this.prismaService.reservationDeposit.create({
             data: {
-                reservationId: reservationId,
+                reservationId: reservationId!,
                 amount: amount,
             }
         })
