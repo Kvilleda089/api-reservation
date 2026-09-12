@@ -18,6 +18,97 @@ Esta API forma parte de una plataforma que posteriormente será integrada con un
 
 ---
 
+## 🏃 Compile and run the project
+
+Sigue estos pasos para configurar y ejecutar la aplicación de forma local.
+
+### 1. Clone the repository
+
+```bash
+git clone https://github.com/Kvilleda089/api-reservation
+cd api-reservation
+```
+
+### 2. Instalación Dependencias
+
+```bash
+npm install
+```
+
+### 3. Configuraciones variables de entorno
+
+Crea un `.env` archivo del directorio raíz utilizando el `.env.example` archivo como referencia.
+
+```bash
+cp .env.example .env
+```
+
+Configura las variables de entorno necesarias en el archivo `.env`.
+
+### 4. Iniciar la base de datos
+
+El proyecto incluye un archivo `docker-compose.yml` con la configuración necesaria para PostgreSQL.
+
+```bash
+docker compose up -d
+```
+
+Comprueba que el contenedor de la base de datos esté en funcionamiento:
+
+```bash
+docker compose ps
+```
+
+### 5. Ejecutar migraciones de Prisma
+
+Una vez que PostgreSQL esté en funcionamiento, aplica las migraciones de la base de datos:
+
+```bash
+npx prisma migrate deploy
+```
+
+### 6. Generar el cliente de Prisma
+
+```bash
+npx prisma generate
+```
+
+### 7. Ejecuta la aplicación
+
+```bash
+npm run start:dev
+```
+La API estará disponible en:
+
+```text
+http://localhost:3000
+```
+
+### 8.  Detener la base de datos
+
+Cuando termines de utilizar la aplicación:
+
+```bash
+docker compose down
+```
+
+---
+
+## ⚙️ Environment variables
+
+El proyecto incluye un archivo `.env.example` que contiene las variables de entorno necesarias para ejecutar la aplicación.
+
+Ejemplo:
+
+```env
+DATABASE_URL="postgresql://USER:PASSWORD@localhost:5432/reserva_facil"
+
+JWT_SECRET="your-secret-key"
+JWT_EXPIRES_IN="1h"
+```
+Crea tu archivo `.env` local a partir de `.env.example` y configura los valores según tu entorno.
+
+
 ## ✨ Características
 
 - 👤 Gestión de empleados.
@@ -58,7 +149,7 @@ Esta API forma parte de una plataforma que posteriormente será integrada con un
 
 La API forma parte de una arquitectura que contempla una aplicación web, una aplicación móvil y diferentes microservicios.
 
-![Diagrama de arquitectura](./docs/architecture.png)
+![Diagrama de arquitectura](./docs/ER%20-%20ReservaFacil.png)
 
 ### Componentes principales
 
