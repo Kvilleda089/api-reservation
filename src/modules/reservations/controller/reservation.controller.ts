@@ -14,7 +14,6 @@ import { GetAllReservationQuery } from "../query/imp/get-all-reservation.query";
 import { GetReservationCheckoutAvailableQuery } from "../query/imp/get-reservation-checkout-available.query";
 import { GetReservationByClientIdQuery } from "../query/imp/get-reservation-by-clientId.query";
 import { GetAgendaQuery } from "../query/imp/get-agenda.query";
-
 @UseGuards(JwtAuthGuard)
 @Controller('reservations')
 export class ReservationController {
@@ -61,7 +60,7 @@ export class ReservationController {
         );
     }  
 
-     @UseGuards(RolesGuard)
+    @UseGuards(RolesGuard)
     @Roles(RoleEnum.SUPER_ADMINISTRATOR)
     @Get('/client/:id')
     getReservationClientById(@Param('id') clientId: string, @Query() paginationDto: PaginationDto) {
@@ -82,6 +81,12 @@ export class ReservationController {
         )
     }
 
+    @UseGuards(RolesGuard)
+    @Roles(
+        RoleEnum.SUPER_ADMINISTRATOR,
+        RoleEnum.CLEANING_STAFF,
+        RoleEnum.COURT_MANAGER,
+    )
     @Get('agenda/:date')
     getAgenda(@Param('date') date: string) {
         return this.queryBus.execute(
