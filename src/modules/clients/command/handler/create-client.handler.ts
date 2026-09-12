@@ -11,7 +11,7 @@ import { handlePrismaError } from "src/database/helpers/prisma-error.handler";
 @CommandHandler(CreateClientCommand)
 export class CreateClientHandler implements ICommandHandler<CreateClientCommand> {
 
-    private readonly logger = new Logger('Creacion de Cliente')
+    private readonly logger = new Logger(`${CreateClientHandler.name}`)
     constructor(
         private readonly prismaService: PrismaService,
 

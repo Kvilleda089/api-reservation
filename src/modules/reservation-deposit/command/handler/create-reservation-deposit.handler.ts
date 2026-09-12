@@ -10,7 +10,7 @@ import { ResponseDto } from "src/common/dto";
 @CommandHandler(CreateReservationDepositCommand)
 export class CreateReservationDepositHandler implements ICommandHandler<CreateReservationDepositCommand> {
 
-    private readonly logger = new Logger('CreateReservationHandler');
+    private readonly logger = new Logger(`${CreateReservationDepositHandler.name}`);
 
     constructor(
         private readonly prismaService: PrismaService,
@@ -38,6 +38,7 @@ export class CreateReservationDepositHandler implements ICommandHandler<CreateRe
 
         //miramos si existe la reservación
         if (!reservation) {
+            this.logger.log(`Lo sentimos, no se ha encontrado una reservación con el ID: ${reservationId}`);
             throw new NotFoundException(`Lo sentimos, no se ha encontrado una reservación con el ID: ${reservationId}`)
         }
 
@@ -46,6 +47,7 @@ export class CreateReservationDepositHandler implements ICommandHandler<CreateRe
             reservation.status === ReservationStatus.CANCELADA ||
             reservation.status === ReservationStatus.FINALIZADA
         ) {
+            this.logger.log(`Lo sentimos, no se puede registrar deposito, debido a que la reservación ya esta ${reservation.status}`);
             throw new BadRequestException(`Lo sentimos, no se puede registrar deposito, debido a que la reservación ya esta ${reservation.status}`)
         }
 
@@ -69,12 +71,13 @@ export class CreateReservationDepositHandler implements ICommandHandler<CreateRe
             newTotalDeposited >
             Number(reservation.totalReservation)
         ) {
+            this.logger.log(`El deposito no puede superar el total de la reservación. Saldo pendiente: Q${Number(reservation.totalReservation) - totalDeposited}`);
             throw new BadRequestException(`El deposito no puede superar el total de la reservación. Saldo pendiente: Q${Number(reservation.totalReservation) - totalDeposited}`)
         }
 
         const reservationDesposit = await this.prismaService.reservationDeposit.create({
             data: {
-                reservationId: reservationId,
+                reservationId: reservationId!,
                 amount: amount,
             }
         })

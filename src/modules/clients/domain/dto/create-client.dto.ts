@@ -1,3 +1,4 @@
+import { Type } from "class-transformer";
 import { IsDate, IsEmail, IsNotEmpty, IsOptional, IsString } from "class-validator";
 
 
@@ -26,6 +27,7 @@ export class CreateClientDto {
 
     @IsDate()
     @IsOptional()
+    @Type(() => Date)
     dateRegistration: Date;
 
     @IsString()
