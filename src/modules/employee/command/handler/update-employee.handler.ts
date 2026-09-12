@@ -12,7 +12,7 @@ import { employeeSelect } from "src/database/select/employee.select";
 @CommandHandler(UpdateEmployeeCommand)
 export class UpdateEmployeeHandler implements ICommandHandler<UpdateEmployeeCommand> {
 
-    private readonly logger = new Logger(`${UpdateEmployeeHandler.name} - Execute.`)
+    private readonly logger = new Logger(`${UpdateEmployeeHandler.name}`)
 
     constructor(
         private readonly prismaService: PrismaService,
@@ -47,6 +47,7 @@ export class UpdateEmployeeHandler implements ICommandHandler<UpdateEmployeeComm
         });
 
         if (!employee) {
+            this.logger.log(`No se ha encontrado resultado con el ID: ${id}`);
             throw new NotFoundException(`No se ha encontrado resultado con el ID: ${id}`)
         };
 

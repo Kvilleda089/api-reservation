@@ -11,7 +11,7 @@ import { getClientFilterMessage } from "../../domain/helpers/client-filter.helpe
 
 @QueryHandler(GetOneClientQuery)
 export class GetOneClientHandler implements IQueryHandler<GetOneClientQuery> {
-    private readonly logger = new Logger('GetOneClientHandler')
+    private readonly logger = new Logger(`${GetOneClientHandler.name}`)
 
     constructor(
         private readonly prismaService: PrismaService,
@@ -22,6 +22,7 @@ export class GetOneClientHandler implements IQueryHandler<GetOneClientQuery> {
 
         try {
             const { filter } = query;
+            this.logger.log(`Realizando busqueda con los siguientes parametros ${filter}`)
             const client = await this.getOneClientByFilter(filter);
 
             return {

@@ -16,7 +16,7 @@ import { CreateReservationDepositDto } from "src/modules/reservation-deposit/dom
 @CommandHandler(CreateReservationCommand)
 export class CreateReservationHandler implements ICommandHandler<CreateReservationCommand> {
 
-    private readonly logger = new Logger('Creación Reservación')
+    private readonly logger = new Logger(`${CreateReservationHandler.name}`)
     constructor(
         private readonly prismaService: PrismaService,
         private readonly queryBus: QueryBus,
@@ -82,6 +82,7 @@ export class CreateReservationHandler implements ICommandHandler<CreateReservati
         );
 
         if (reservationAvailable.data.length > 0) {
+            this.logger.log(`La reservación no está disponible para la fecha, hora y recurso seleccionados.`)
             throw new ConflictException(
                 'La reservación no está disponible para la fecha, hora y recurso seleccionados.'
             );

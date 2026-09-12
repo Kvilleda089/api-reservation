@@ -10,7 +10,7 @@ import { ResponseDto } from "src/common/dto";
 @CommandHandler(UpdateClientCommand)
 export class UpdateClientHandler implements ICommandHandler<UpdateClientCommand> {
 
-    private readonly logger = new Logger('UpdateClientHandler');
+    private readonly logger = new Logger(`${UpdateClientHandler.name}`);
 
     constructor(
         private readonly prismaService: PrismaService,
@@ -45,6 +45,7 @@ export class UpdateClientHandler implements ICommandHandler<UpdateClientCommand>
         });
 
         if (!client) {
+            this.logger.log(`Cliente no encontrado con el ID - ${clientId}`)
             throw new NotFoundException(`Cliente no encontrado con el id ${clientId}`)
         }
         const updateClient = await this.prismaService.client.update({
@@ -52,7 +53,7 @@ export class UpdateClientHandler implements ICommandHandler<UpdateClientCommand>
                 id: clientId,
             },
             data: dataUpdate
-        })
+        });
         return updateClient;
     }
 }
