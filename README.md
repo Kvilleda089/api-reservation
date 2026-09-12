@@ -1,98 +1,192 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# ReservaFácil API
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+API REST para la gestión de reservas de canchas, salones y otros espacios.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+> Proyecto desarrollado como parte de una plataforma de gestión de reservas, enfocada en aplicar principios de arquitectura de software, separación de responsabilidades y buenas prácticas de desarrollo backend.
 
-## Description
+---
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+## 📋 Descripción
 
-## Project setup
+ReservaFácil es una API REST desarrollada para gestionar la administración de reservas de espacios como canchas, salones y otros establecimientos.
+
+La aplicación permite gestionar clientes, empleados y reservaciones, así como registrar anticipos asociados a una reserva. Además, cuenta con autenticación y autorización basada en roles para controlar el acceso a las diferentes funcionalidades del sistema.
+
+El proyecto está diseñado con una arquitectura modular utilizando **NestJS, Prisma y PostgreSQL**, aplicando el patrón **CQRS** para separar las operaciones de escritura y consulta.
+
+Esta API forma parte de una plataforma que posteriormente será integrada con una aplicación web, una aplicación móvil y diferentes microservicios.
+
+---
+
+## 🏃 Compile and run the project
+
+Sigue estos pasos para configurar y ejecutar la aplicación de forma local.
+
+### 1. Clone the repository
 
 ```bash
-$ npm install
+git clone https://github.com/Kvilleda089/api-reservation
+cd api-reservation
 ```
 
-## Compile and run the project
+### 2. Instalación Dependencias
 
 ```bash
-# development
-$ npm run start
-
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
+npm install
 ```
 
-## Run tests
+### 3. Configuraciones variables de entorno
+
+Crea un `.env` archivo del directorio raíz utilizando el `.env.example` archivo como referencia.
 
 ```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
+cp .env.example .env
 ```
 
-## Deployment
+Configura las variables de entorno necesarias en el archivo `.env`.
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
+### 4. Iniciar la base de datos
 
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+El proyecto incluye un archivo `docker-compose.yml` con la configuración necesaria para PostgreSQL.
 
 ```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
+docker compose up -d
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+Comprueba que el contenedor de la base de datos esté en funcionamiento:
 
-## Resources
+```bash
+docker compose ps
+```
 
-Check out a few resources that may come in handy when working with NestJS:
+### 5. Ejecutar migraciones de Prisma
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+Una vez que PostgreSQL esté en funcionamiento, aplica las migraciones de la base de datos:
 
-## Support
+```bash
+npx prisma migrate deploy
+```
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+### 6. Generar el cliente de Prisma
 
-## Stay in touch
+```bash
+npx prisma generate
+```
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+### 7. Ejecuta la aplicación
 
-## License
+```bash
+npm run start:dev
+```
+La API estará disponible en:
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+```text
+http://localhost:3000
+```
+
+### 8.  Detener la base de datos
+
+Cuando termines de utilizar la aplicación:
+
+```bash
+docker compose down
+```
+
+---
+
+## ⚙️ Environment variables
+
+El proyecto incluye un archivo `.env.example` que contiene las variables de entorno necesarias para ejecutar la aplicación.
+
+Ejemplo:
+
+```env
+DATABASE_URL="postgresql://USER:PASSWORD@localhost:5432/reserva_facil"
+
+JWT_SECRET="your-secret-key"
+JWT_EXPIRES_IN="1h"
+```
+Crea tu archivo `.env` local a partir de `.env.example` y configura los valores según tu entorno.
+
+
+## ✨ Características
+
+- 👤 Gestión de empleados.
+- 🔐 Autenticación mediante usuario y contraseña.
+- 🎫 Autenticación basada en JWT.
+- 🛡️ Protección de rutas mediante Guards.
+- 👥 Autorización basada en roles.
+- 👤 Gestión de clientes.
+- 📅 Creación y gestión de reservaciones.
+- 🔎 Validación de disponibilidad de recursos.
+- 🏟️ Gestión de diferentes recursos, como canchas y salones.
+- 💰 Registro de anticipos asociados a una reservación.
+- 📋 Consulta del historial de reservaciones de un cliente.
+- 🧩 Arquitectura modular con NestJS.
+- 🔄 Implementación del patrón CQRS.
+- 🗄️ Persistencia de datos mediante Prisma ORM.
+- 🐘 PostgreSQL como sistema gestor de base de datos.
+
+---
+
+## 🛠️ Tecnologías utilizadas
+
+| Tecnología | Uso |
+|---|---|
+| **Node.js** | Entorno de ejecución |
+| **NestJS** | Framework backend |
+| **TypeScript** | Lenguaje de programación |
+| **Prisma** | ORM |
+| **PostgreSQL** | Base de datos |
+| **JWT** | Autenticación |
+| **Passport** | Estrategia de autenticación |
+| **bcrypt** | Hash de contraseñas |
+| **CQRS** | Separación de comandos y consultas |
+
+---
+
+## 🏗️ Arquitectura
+
+La API forma parte de una arquitectura que contempla una aplicación web, una aplicación móvil y diferentes microservicios.
+
+![Diagrama de arquitectura](./docs/ER%20-%20ReservaFacil.png)
+
+### Componentes principales
+
+- **Web:** aplicación web para la gestión de reservas.
+- **Mobile:** aplicación móvil.
+- **ReservaFácil API:** API principal encargada de la gestión de reservas, clientes, empleados y anticipos.
+- **PostgreSQL:** almacenamiento de la información principal.
+- **Microservicio de Notificaciones:** encargado del envío y procesamiento de notificaciones.
+- **Microservicio de Documentos:** encargado de la generación y gestión de documentos PDF.
+
+> Los microservicios de notificaciones y documentos forman parte de las siguientes etapas de desarrollo del proyecto.
+
+---
+
+## 🗃️ Modelo entidad-relación
+
+El siguiente diagrama representa el modelo de datos utilizado por la aplicación.
+
+![Diagrama ER](./docs/er-diagram.png)
+
+---
+
+## 📁 Estructura del proyecto
+
+El proyecto utiliza una estructura modular basada en las funcionalidades principales de la aplicación.
+
+```text
+src/
+├── modules/
+│   ├── auth/
+│   ├── clients/
+│   ├── employees/
+│   ├── reservations/
+│   └── ...
+│
+├── common/
+│
+├── generated/
+│
+└── main.ts
