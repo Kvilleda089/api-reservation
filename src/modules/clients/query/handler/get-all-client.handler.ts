@@ -9,7 +9,7 @@ import { PrismaService } from "src/database/prisma.service";
 
 @QueryHandler(GetAllClientQuery)
 export class GetAllClientHandler implements IQueryHandler<GetAllClientQuery> {
-    private readonly logger = new Logger('GetAllClientQueryHandler')
+    private readonly logger = new Logger(`${GetAllClientHandler.name}`)
 
     constructor(
         private readonly prismaService: PrismaService,

@@ -12,7 +12,7 @@ import { handlePrismaError } from "src/database/helpers/prisma-error.handler";
 @CommandHandler(ChangePasswordCommand)
 export class ChangePasswordHandler implements ICommandHandler<ChangePasswordCommand> {
 
-    private readonly logger = new Logger(`${ChangePasswordHandler.name} - EXECUTE`);
+    private readonly logger = new Logger(`${ChangePasswordHandler.name}`);
 
     constructor(
         private readonly prismaService: PrismaService,
@@ -52,7 +52,8 @@ export class ChangePasswordHandler implements ICommandHandler<ChangePasswordComm
         });
 
         if (!employee) {
-            throw new NotFoundException(`Empleado no encontrado. `)
+            this.logger.log(`Empleado no encontrado con el ID: ${id}`)
+            throw new NotFoundException(`Empleado no encontrado con el ID: ${id} `)
         };
 
         const isPasswordValid = await bcrypt.compare(currentPassword, employee.password);

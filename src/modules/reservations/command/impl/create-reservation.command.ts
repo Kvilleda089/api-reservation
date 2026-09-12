@@ -1,10 +1,10 @@
 import { ICommand } from "@nestjs/cqrs";
-import { CreateReservationDto } from "../../domain/dto/create-reservation.dto";
+import { CreateReservationDataDto } from "../../domain/dto/create-reservation-data.dto";
 
 
 export class CreateReservationCommand implements ICommand {
 
     constructor(
-        public readonly data: CreateReservationDto
+        public readonly data: CreateReservationDataDto,
     ){}
 }
