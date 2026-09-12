@@ -18,11 +18,11 @@ Esta API forma parte de una plataforma que posteriormente será integrada con un
 
 ---
 
-## 🏃 Compile and run the project
+## 🏃 Compilar y ejecutar el proyecto
 
 Sigue estos pasos para configurar y ejecutar la aplicación de forma local.
 
-### 1. Clone the repository
+### 1. Clonar el repositorio
 
 ```bash
 git clone https://github.com/Kvilleda089/api-reservation
