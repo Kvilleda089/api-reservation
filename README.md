@@ -73,6 +73,38 @@ npx prisma migrate deploy
 npx prisma generate
 ```
 
+---
+
+## Crear el administrador inicial 
+
+La aplicación utiliza autenticación y autorización basada en roles. Por esta razón, una base de datos nueva necesita contar inicialmente con un usuario que tenga el rol SUPER_ADMINISTRATOR.
+
+El proyecto incluye un script de inicialización mediante Prisma Seed.
+
+Las variables utilizadas por el seed son:
+
+SEED_ADMIN_FIRST_NAME=
+SEED_ADMIN_SURNAME=
+SEED_ADMIN_EMAIL=
+SEED_ADMIN_USERNAME=
+SEED_ADMIN_PASSWORD=
+
+Estas variables deben configurarse únicamente cuando se vaya a ejecutar el proceso de inicialización del administrador.
+
+Ejecuta:
+
+npm run prisma:seed
+
+El seed:
+
+Verifica si ya existe un SUPER_ADMINISTRATOR.
+Si no existe, crea el administrador inicial.
+Genera el hash de la contraseña utilizando bcrypt.
+Si ya existe un SUPER_ADMINISTRATOR, no crea otro administrador.
+
+El seed está diseñado para poder ejecutarse de forma segura más de una vez. Si ya existe un SUPER_ADMINISTRATOR, el proceso no crea un usuario duplicado.
+
+---
 ### 7. Ejecuta la aplicación
 
 ```bash
