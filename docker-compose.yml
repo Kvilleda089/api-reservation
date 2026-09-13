@@ -12,5 +12,18 @@ services:
     volumes:
       - reservation_postgres_data:/var/lib/postgresql/data
 
+  api:
+    image: reservation-api
+    container_name: reservation-api
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      DATABASE_URL: "postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}?schema=public"
+    ports:
+      - "3000:3000"
+    depends_on:
+      - postgres
+
 volumes:
   reservation_postgres_data:
