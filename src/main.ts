@@ -17,7 +17,12 @@ async function bootstrap() {
       forbidNonWhitelisted: true,
       transform: true,
     })
-  )
+  );
+
+  app.enableCors({
+    origin: env.ORIGIN_CORS,
+    credentials: true,
+  });
 
   await app.listen(env.port);
   logger.log(`API Rerservaciones running on port ${env.port}`)
