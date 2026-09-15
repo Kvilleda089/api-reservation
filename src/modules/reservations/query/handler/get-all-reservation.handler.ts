@@ -10,7 +10,7 @@ import { handlePrismaError } from "src/database/helpers/prisma-error.handler";
 @QueryHandler(GetAllReservationQuery)
 export class GetAllReservationHandler implements IQueryHandler<GetAllReservationQuery> {
 
-    private readonly logger = new Logger('GetReservationCheckoutAvailableHandler')
+    private readonly logger = new Logger(`${GetAllReservationHandler.name}`)
 
     constructor(
         private readonly prismaService: PrismaService,
@@ -22,7 +22,7 @@ export class GetAllReservationHandler implements IQueryHandler<GetAllReservation
 
         try {
             const { page = 1, limit = 10 } = query.pagination;
-            const totalRecords = await this.prismaService.client.count();
+            const totalRecords = await this.prismaService.reservation.count();
 
             this.logger.log(`Total de registros encontrados ${totalRecords}`)
             const lastPage = Math.ceil(totalRecords / limit);
@@ -30,6 +30,9 @@ export class GetAllReservationHandler implements IQueryHandler<GetAllReservation
             const reservations = await this.prismaService.reservation.findMany({
                 skip: (page - 1) * limit,
                 take: limit,
+                include: {
+                    client: true,
+                }
             });
 
 
