@@ -13,7 +13,7 @@ import { ResponseDto } from "src/common/dto";
 export class GetReservationCheckoutAvailableHandler implements IQueryHandler<GetReservationCheckoutAvailableQuery> {
 
 
-    private readonly logger = new Logger('GetReservationCheckoutAvailableHandler')
+    private readonly logger = new Logger(`${GetReservationCheckoutAvailableHandler.name}`)
 
     constructor(
         private readonly prismaService: PrismaService,
