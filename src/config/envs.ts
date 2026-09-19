@@ -3,7 +3,7 @@ import * as joi from 'joi';
 import { StringValue } from 'ms';
 
 interface EnVars {
-  NODE_ENV: 'Develop' | 'Qa' | 'Production';
+  NODE_ENV: 'Development' | 'Qa' | 'Production';
   PORT: number;
   DATABASE_URL: string;
   POSTGRES_DB: string;
