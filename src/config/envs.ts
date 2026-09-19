@@ -3,6 +3,7 @@ import * as joi from 'joi';
 import { StringValue } from 'ms';
 
 interface EnVars {
+  NODE_ENV: 'Develop' | 'Qa' | 'Production';
   PORT: number;
   DATABASE_URL: string;
   POSTGRES_DB: string;
@@ -23,6 +24,7 @@ const envsSchema = joi
     JWT_SECRET: joi.string().required(),
     JWT_EXPIRES_IN: joi.string().required(),
     ORIGIN_CORS: joi.string(),
+    NODE_ENV: joi.string().valid('Development', 'Qa', 'Production').required(),
 
   })
   .unknown(true);
@@ -38,6 +40,7 @@ if (error) {
 const envVars: EnVars = value;
 
 export const env = {
+  node_env: envVars.NODE_ENV,
   port: envVars.PORT,
   database_url: envVars.DATABASE_URL,
   postgres_db: envVars.POSTGRES_DB,
