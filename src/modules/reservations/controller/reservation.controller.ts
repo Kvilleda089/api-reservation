@@ -14,6 +14,7 @@ import { GetReservationCheckoutAvailableQuery } from "../query/imp/get-reservati
 import { GetReservationByClientIdQuery } from "../query/imp/get-reservation-by-clientId.query";
 import { GetAgendaQuery } from "../query/imp/get-agenda.query";
 import { CreateReservationDataDto } from "../domain/dto/create-reservation-data.dto";
+import { GetReservationByIdQuery } from "../query/imp/get-reservation-by-id.query";
 @UseGuards(JwtAuthGuard)
 @Controller('reservations')
 export class ReservationController {
@@ -91,6 +92,15 @@ export class ReservationController {
     getAgenda(@Param('date') date: string) {
         return this.queryBus.execute(
             new GetAgendaQuery(date)
+        )
+    };
+
+    @Get(':id')
+    getReservationById(
+        @Param('id') id: string,
+    ) {
+        return this.queryBus.execute(
+            new GetReservationByIdQuery(id)
         )
     }
 }
