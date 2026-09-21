@@ -23,7 +23,8 @@ export class GetAgendaHandler implements IQueryHandler<GetAgendaQuery> {
 
             const dateFormat = new Date(year, month - 1, day);
 
-            console.log(dateFormat);
+            this.logger.log(`Obteniendo reservaciones del día ${date}`)
+            
             return this.getAgendaReservation(dateFormat);
         } catch (error) {
             this.logger.error(`Error to created Client error: ${error}`);
@@ -41,7 +42,12 @@ export class GetAgendaHandler implements IQueryHandler<GetAgendaQuery> {
         const availableReservations = await this.prismaService.reservation.findMany({
             where: {
                 reservationDate: date,
-                status: StatusReservationEnum.CONFIRMADA
+                status: {
+                    in: [
+                        StatusReservationEnum.CONFIRMADA,
+                        StatusReservationEnum.PENDIENTE,
+                    ]
+                }
             }
         });
 
@@ -100,6 +106,7 @@ export class GetAgendaHandler implements IQueryHandler<GetAgendaQuery> {
             resources: resources,
         }
 
+        this.logger.log(`Se encontrarón un total de registros ${agendaResponse.resources.length}`)
         return agendaResponse;
     }
 }
