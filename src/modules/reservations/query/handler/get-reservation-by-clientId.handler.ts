@@ -5,6 +5,7 @@ import { Logger, NotFoundException } from "@nestjs/common";
 import { PaginationDto, ResponseDto } from "src/common/dto";
 import { Reservation } from "src/generated/prisma/client";
 import { handlePrismaError } from "src/database/helpers/prisma-error.handler";
+import { buildPaginationResponse } from "src/common/utils/pagination-response.helper";
 
 
 @QueryHandler(GetReservationByClientIdQuery)
@@ -18,35 +19,17 @@ export class GetReservationByClientIdHandler implements IQueryHandler<GetReserva
 
     async execute(query: GetReservationByClientIdQuery): Promise<ResponseDto<Reservation[]>> {
         try {
-            const { page = 1, limit = 10 } = query.paginationDto;
-            const totalRecords = await this.prismaService.reservation.count();
 
-            this.logger.log(`Total de registros encontrados ${totalRecords}`)
-            const lastPage = Math.ceil(totalRecords / limit);
+            const result = await this.getReservationsByClient(
+                query.clientId,
+                query.paginationDto,
+            );
 
-            const reservations = await this.prismaService.reservation.findMany({
-                where: {
-                    clientId: query.clientId,
-                },
-                skip: (page - 1) * limit,
-                take: limit,
-            });
-
-            if(reservations.length ===0) {
-                throw new NotFoundException(`No se encontrarón registros con el cliente ${query.clientId}`)
-            }
-
-            return {
-                statusCode: 200,
-                data: reservations,
-                message: 'Resultados obtenidos',
-                pagination: {
-                    page,
-                    limit,
-                    totalRecords,
-                    lastPage,
-                },
-            };
+        
+            return buildPaginationResponse(
+                result.reservations,
+                result.pagination
+            )
         } catch (error) {
             this.logger.error(`Error to created Client error: ${error}`);
             handlePrismaError(
@@ -54,7 +37,53 @@ export class GetReservationByClientIdHandler implements IQueryHandler<GetReserva
                 `Hubo un error al crear reservación`
             )
         }
-    }
+    };
 
+    private async getReservationsByClient(
+        clientId: string,
+        paginationDto: PaginationDto,
+    ) {
+
+        this.logger.log(`Buscando información con el ClientId: ${clientId}`)
+        const { page = 1, limit = 10 } = paginationDto;
+
+        const where = {
+            clientId,
+        };
+
+        const [totalRecords, reservations] = await Promise.all([
+            this.prismaService.reservation.count({
+                where,
+            }),
+
+            
+
+            this.prismaService.reservation.findMany({
+                where,
+                skip: (page - 1) * limit,
+                take: limit,
+            }),
+        ]);
+
+        this.logger.log(`Total de registros encontrados para el ClientId: ${reservations.length}`)
+        if (reservations.length === 0) {
+            this.logger.log(`No se encontrarón reservaciones con el ClientId ${reservations.length}`)
+            throw new NotFoundException(
+                `No se encontraron registros con el ClientId ${clientId}`
+            );
+        }
+
+        return {
+            reservations,
+            pagination: {
+                page,
+                limit,
+                totalRecords,
+                lastPage: Math.ceil(totalRecords / limit),
+
+            }
+
+        };
+    }
 
 }
