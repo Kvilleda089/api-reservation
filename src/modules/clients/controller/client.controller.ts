@@ -1,6 +1,6 @@
 import { Body, Controller, Get, Param, Patch, Post, Query, UseGuards } from "@nestjs/common";
 import { CommandBus, QueryBus } from "@nestjs/cqrs";
-import { ClientFilterDto, CreateClientDto, UpdateClientDto } from "../domain/dto";
+import { ClientFilterDto, CreateClientDto, GetOneClientDto, UpdateClientDto } from "../domain/dto";
 import { CreateClientCommand } from "../command/impl/create-client.command";
 import { GetAllClientQuery } from "../query/impl/get-all-client.query";
 import { PaginationDto } from "src/common/dto";
@@ -36,8 +36,11 @@ export class ClientController {
     }
 
     @Get('one')
-    getOne(@Query() filter: ClientFilterDto) {
-        return this.queryBus.execute(new GetOneClientQuery(filter));
+    getOne(
+        @Query() query: GetOneClientDto,
+
+) {
+        return this.queryBus.execute(new GetOneClientQuery(query));
     }
 
     @Patch(':id')

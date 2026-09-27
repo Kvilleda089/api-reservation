@@ -11,5 +11,5 @@ export class ResponsePagination {
     page: number;
     limit: number;
     totalRecords: number;
-    lastPage: number;
+    lastPage?: number;
 }
