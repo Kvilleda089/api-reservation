@@ -4,33 +4,41 @@ import { PrismaService } from "src/database/prisma.service";
 import { Logger } from "@nestjs/common";
 import { StatisticsPeriod } from "../../domain/type/statistics-periodo";
 import { handlePrismaError } from "src/database/helpers/prisma-error.handler";
-import { StatisticsResponseDto } from "../../domain/dto/statistics-response.dto";
-
+import { StatisticsResponseDto, StatisticsTimelineDto } from "../../domain/dto/statistics-response.dto";
 
 @QueryHandler(GetStatisticsByPeriodQuery)
 export class GetStatisticsByPeriodHandler implements IQueryHandler<GetStatisticsByPeriodQuery> {
 
-    private readonly logger = new Logger(`${GetStatisticsByPeriodHandler.name}`)
+    private readonly logger = new Logger(`${GetStatisticsByPeriodHandler.name}`);
+
     constructor(
         private readonly prismaService: PrismaService,
+    ) {}
 
-    ) { }
-
-    async execute(query: GetStatisticsByPeriodQuery): Promise<StatisticsResponseDto> {
+    async execute(
+        query: GetStatisticsByPeriodQuery,
+    ): Promise<StatisticsResponseDto> {
         try {
             return await this.getStatisticsByPeriod(query.period);
         } catch (error) {
-            this.logger.error(`Error al querer obtener estadistica${error}`);
+            this.logger.error(
+                `Error al querer obtener estadistica ${error}`,
+            );
+
             handlePrismaError(
                 error,
-                `Error al querer obtener estadistica`
-            )
+                `Error al querer obtener estadistica`,
+            );
         }
     }
 
+    private async getStatisticsByPeriod(
+        period: StatisticsPeriod,
+    ): Promise<StatisticsResponseDto> {
+        this.logger.log(
+            `Obteniendo estadísticas del periodo: ${period}`,
+        );
 
-    private async getStatisticsByPeriod(period: StatisticsPeriod): Promise<StatisticsResponseDto> {
-        this.logger.log(`Obteniendo estadísticas del perido: ${period}`)
         const today = new Date();
 
         let startDate: Date;
@@ -160,6 +168,68 @@ export class GetStatisticsByPeriodHandler implements IQueryHandler<GetStatistics
             ).length,
         };
 
+        const reservationsTimeline: StatisticsTimelineDto[] = [];
+
+        if (period === "week" || period === "month") {
+            const currentDate = new Date(startDate);
+
+            while (currentDate < endDate) {
+                const reservationsCount = reservations.filter(
+                    reservation =>
+                        reservation.reservationDate.getDate() ===
+                            currentDate.getDate() &&
+                        reservation.reservationDate.getMonth() ===
+                            currentDate.getMonth() &&
+                        reservation.reservationDate.getFullYear() ===
+                            currentDate.getFullYear(),
+                ).length;
+
+                reservationsTimeline.push({
+                    label: currentDate
+                        .getDate()
+                        .toString()
+                        .padStart(2, "0"),
+                    reservations: reservationsCount,
+                });
+
+                currentDate.setDate(
+                    currentDate.getDate() + 1,
+                );
+            }
+        }
+
+        if (period === "year") {
+            const months = [
+                "Ene",
+                "Feb",
+                "Mar",
+                "Abr",
+                "May",
+                "Jun",
+                "Jul",
+                "Ago",
+                "Sep",
+                "Oct",
+                "Nov",
+                "Dic",
+            ];
+
+            for (let month = 0; month < 12; month++) {
+                const reservationsCount = reservations.filter(
+                    reservation =>
+                        reservation.reservationDate.getMonth() ===
+                            month &&
+                        reservation.reservationDate.getFullYear() ===
+                            today.getFullYear(),
+                ).length;
+
+                reservationsTimeline.push({
+                    label: months[month],
+                    reservations: reservationsCount,
+                });
+            }
+        }
+
         return {
             period,
             range: {
@@ -176,6 +246,7 @@ export class GetStatisticsByPeriodHandler implements IQueryHandler<GetStatistics
                 totalDeposits,
             },
             reservationsByResource,
+            reservationsTimeline,
         };
     }
 }
