@@ -21,10 +21,16 @@ export class StatisticsResourceDto {
     SALON: number;
 };
 
+export class StatisticsTimelineDto {
+    label: string;
+    reservations: number;
+}
 
 export class StatisticsResponseDto {
     period: StatisticsPeriod;
     range: StatisticsRangeDto;
     summary: StatisticsSummaryDto;
     reservationsByResource: StatisticsResourceDto;
-}
+    reservationsTimeline: StatisticsTimelineDto[];
+};
+
