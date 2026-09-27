@@ -23,7 +23,6 @@ export class GetAgendaHandler implements IQueryHandler<GetAgendaQuery> {
 
             const dateFormat = new Date(year, month - 1, day);
 
-            console.log(dateFormat);
             return this.getAgendaReservation(dateFormat);
         } catch (error) {
             this.logger.error(`Error to created Client error: ${error}`);
