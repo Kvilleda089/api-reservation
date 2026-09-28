@@ -15,6 +15,7 @@ import { GetReservationByClientIdQuery } from "../query/imp/get-reservation-by-c
 import { GetAgendaQuery } from "../query/imp/get-agenda.query";
 import { CreateReservationDataDto } from "../domain/dto/create-reservation-data.dto";
 import { GetReservationByIdQuery } from "../query/imp/get-reservation-by-id.query";
+import { ReservationFiltersDto } from "../domain/dto/reservation-filters.dto";
 @UseGuards(JwtAuthGuard)
 @Controller('reservations')
 export class ReservationController {
@@ -43,9 +44,9 @@ export class ReservationController {
         RoleEnum.ADMINISTRATOR
     )
     @Get()
-    getAllReservation(@Query() paginationDto: PaginationDto){
+    getAllReservation(@Query() filters: ReservationFiltersDto) {
         return this.queryBus.execute(
-            new GetAllReservationQuery(paginationDto)
+            new GetAllReservationQuery(filters)
         )
     }
 
