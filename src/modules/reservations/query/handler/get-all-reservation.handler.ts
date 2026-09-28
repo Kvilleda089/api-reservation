@@ -2,10 +2,12 @@ import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
 import { GetAllReservationQuery } from '../imp/get-all-reservation.query';
 import { Logger } from '@nestjs/common';
 import { PrismaService } from 'src/database/prisma.service';
-import { PaginationDto, ResponseDto } from 'src/common/dto';
+import { ResponseDto } from 'src/common/dto';
 import { Reservation } from 'src/generated/prisma/client';
 import { handlePrismaError } from 'src/database/helpers/prisma-error.handler';
 import { buildPaginationResponse } from "src/common/utils/pagination-response.helper";
+import { buildReservationWhere } from '../../infrastructure/prisma/reservation.query.builder';
+import { ReservationFiltersDto } from '../../domain/dto/reservation-filters.dto';
 
 @QueryHandler(GetAllReservationQuery)
 export class GetAllReservationHandler
@@ -21,9 +23,9 @@ export class GetAllReservationHandler
 
     async execute(query: GetAllReservationQuery): Promise<ResponseDto<Reservation[]>> {
         try {
-
+            
             const result = await this.getAllReservations(
-                query.pagination,
+                query.filters,
             );
 
             return buildPaginationResponse(
@@ -45,13 +47,16 @@ export class GetAllReservationHandler
         }
     }
 
-    private async getAllReservations(paginationDto: PaginationDto,) {
-        const {page = 1, limit = 10, } = paginationDto;
-
+    private async getAllReservations( filtersDto: ReservationFiltersDto) {
+        const {page = 1, limit = 10, ...filters } = filtersDto;
+        const where = buildReservationWhere(filters);
         const [totalRecords, reservations] = await Promise.all([
-            this.prismaService.reservation.count(),
+            this.prismaService.reservation.count({
+                where
+            }),
 
             this.prismaService.reservation.findMany({
+                where,
                 skip: (page - 1) * limit,
                 take: limit,
                 include: {
