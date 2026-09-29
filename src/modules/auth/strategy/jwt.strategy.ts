@@ -1,13 +1,14 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { env } from 'src/config/envs';
+import { PrismaService } from 'src/database/prisma.service';
 
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
 
-    constructor() {
+    constructor(private readonly prismaService: PrismaService) {
         super({
             jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
             ignoreExpiration: false,
@@ -15,7 +16,19 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
         });
     }
 
-    validate(payload: any) {
+    async validate(payload: any) {
+        if (!payload.jti) {
+            throw new UnauthorizedException('Sesión inválida. Inicia sesión nuevamente.');
+        }
+
+        const session = await this.prismaService.userSession.findUnique({
+            where: { tokenId: payload.jti },
+        });
+
+        if (!session || session.revokedAt) {
+            throw new UnauthorizedException('La sesión fue cerrada. Inicia sesión nuevamente.');
+        }
+
         return payload;
     }
 }
