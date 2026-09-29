@@ -7,7 +7,7 @@ import { PrismaService } from "src/database/prisma.service";
 import { LoginDto, LoginResponseDto } from "../../domain/dto";
 import { RoleEnum } from "src/common/enum/role.enum";
 import { handlePrismaError } from "src/database/helpers/prisma-error.handler";
-
+import { randomUUID } from 'crypto';
 
 @CommandHandler(LoginCommand)
 export class LoginHandler implements ICommandHandler<LoginCommand> {
@@ -62,7 +62,20 @@ export class LoginHandler implements ICommandHandler<LoginCommand> {
             role: employee.role,
         }
 
-        const accessToken = this.jwtService.sign(payload);
+        const tokenId = randomUUID();
+        const accessToken = this.jwtService.sign(payload, { jwtid: tokenId });
+
+        // Se lee la expiración del propio token para no repetir la configuración.
+        const { exp } = this.jwtService.decode<{ exp: number }>(accessToken);
+
+
+        await this.prismaService.userSession.create({
+            data: {
+                employeeId: employee.id,
+                tokenId,
+                expiresAt: new Date(exp * 1000), // exp viene en segundos
+            },
+        });
 
         const response: LoginResponseDto = {
             accessToken,
