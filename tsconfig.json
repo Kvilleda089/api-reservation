@@ -21,9 +21,6 @@
     "noFallthroughCasesInSwitch": false,
     "strictPropertyInitialization": false,
     "resolveJsonModule": true,
-    "types": [
-      "node", 
-      "jest"
-    ]
+    "types": ["node", "jest"]
   }
 }
