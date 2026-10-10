@@ -6,18 +6,20 @@ import { EmployeeModule } from './modules/employee/employee.module';
 import { ReservationDepositModule } from './modules/reservation-deposit/reservation-deposit.module';
 import { PrismaModule } from './database/prisma.module';
 import { AuthModule } from './modules/auth/auth.module';
-
+import { StatisticsModule } from './modules/statistics/statistics.module';
 
 @Module({
   imports: [
     PrismaModule,
     CqrsModule.forRoot(),
-    ReservationsModule, 
-    ClientsModule, 
-    EmployeeModule, 
-    ReservationDepositModule, 
-    AuthModule],
+    ReservationsModule,
+    ClientsModule,
+    EmployeeModule,
+    ReservationDepositModule,
+    AuthModule,
+    StatisticsModule,
+  ],
   controllers: [],
   providers: [],
 })
-export class AppModule { }
+export class AppModule {}

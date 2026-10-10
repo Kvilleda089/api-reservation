@@ -3,6 +3,6 @@ import { PaginationDto } from 'src/common/dto';
 import { ClientFilterDto } from '../../domain/dto';
 
 export class GetOneClientDto extends IntersectionType(
-    ClientFilterDto,
-    PaginationDto,
+  ClientFilterDto,
+  PaginationDto,
 ) {}

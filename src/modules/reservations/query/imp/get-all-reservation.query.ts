@@ -1,10 +1,6 @@
-import { IQuery } from "@nestjs/cqrs";
-import { PaginationDto } from "src/common/dto";
-
-
+import { IQuery } from '@nestjs/cqrs';
+import { ReservationFiltersDto } from '../../domain/dto/reservation-filters.dto';
 
 export class GetAllReservationQuery implements IQuery {
-    constructor(
-        public readonly pagination: PaginationDto,
-    ){}
+  constructor(public readonly filters: ReservationFiltersDto) {}
 }

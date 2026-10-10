@@ -5,11 +5,8 @@ import { ReservationController } from './controller/reservation.controller';
 import { ReservationQueryHandlers } from './query/handler';
 
 @Module({
-    imports: [PrismaModule,],
-    controllers:[ReservationController],
-    providers:[
-        ...ReservationCommandHadler,
-        ...ReservationQueryHandlers,
-    ]
+  imports: [PrismaModule],
+  controllers: [ReservationController],
+  providers: [...ReservationCommandHadler, ...ReservationQueryHandlers],
 })
 export class ReservationsModule {}

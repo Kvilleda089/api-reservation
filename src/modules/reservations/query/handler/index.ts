@@ -1,13 +1,13 @@
-import { GetAgendaHandler } from "./get-agenda.handler";
-import { GetAllReservationHandler } from "./get-all-reservation.handler";
-import { GetReservationByClientIdHandler } from "./get-reservation-by-clientId.handler";
-import { GetReservationCheckoutAvailableHandler } from "./get-reservation-checkout-available.handler";
-
-
+import { GetAgendaHandler } from './get-agenda.handler';
+import { GetAllReservationHandler } from './get-all-reservation.handler';
+import { GetReservationByClientIdHandler } from './get-reservation-by-clientId.handler';
+import { GetReservationByIdHandler } from './get-reservation-by-id.handler';
+import { GetReservationCheckoutAvailableHandler } from './get-reservation-checkout-available.handler';
 
 export const ReservationQueryHandlers = [
-    GetReservationCheckoutAvailableHandler,
-    GetAllReservationHandler,
-    GetReservationByClientIdHandler,
-    GetAgendaHandler,
-]
+  GetReservationCheckoutAvailableHandler,
+  GetAllReservationHandler,
+  GetReservationByClientIdHandler,
+  GetAgendaHandler,
+  GetReservationByIdHandler,
+];
