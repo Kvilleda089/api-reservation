@@ -41,7 +41,7 @@ describe('CreateEmployeeHandler', () => {
     handler = new CreateEmployeeHandler(prisma as any);
   });
 
-  t('crea el empleado con contraseña hasheada y usuario generado', async () => {
+  it('crea el empleado con contraseña hasheada y usuario generado', async () => {
     const created = { id: 'emp-1', username: 'KV1234' };
     prisma.employee.create.mockResolvedValue(created);
 
