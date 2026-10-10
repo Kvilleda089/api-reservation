@@ -25,7 +25,6 @@ const envsSchema = joi
     JWT_EXPIRES_IN: joi.string().required(),
     ORIGIN_CORS: joi.string(),
     NODE_ENV: joi.string().valid('DEVELOPMENT', 'QA', 'PRD').required(),
-
   })
   .unknown(true);
 
@@ -49,5 +48,4 @@ export const env = {
   jwt_secret: envVars.JWT_SECRET,
   jwt_expires_in: envVars.JWT_EXPIRES_IN,
   ORIGIN_CORS: envVars.ORIGIN_CORS,
-  
-}
+};

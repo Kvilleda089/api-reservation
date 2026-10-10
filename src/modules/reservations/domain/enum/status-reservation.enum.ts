@@ -1,5 +1,3 @@
-
-
 export enum StatusReservationEnum {
   PENDIENTE = 'PENDIENTE',
   CONFIRMADA = 'CONFIRMADA',

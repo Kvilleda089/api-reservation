@@ -1,10 +1,6 @@
-import { IQuery } from "@nestjs/cqrs";
-import { ClientFilterDto, GetOneClientDto } from "../../domain/dto";
-import { PaginationDto } from "src/common/dto";
-
+import { IQuery } from '@nestjs/cqrs';
+import { GetOneClientDto } from '../../domain/dto';
 
 export class GetOneClientQuery implements IQuery {
-    constructor(
-        public readonly query: GetOneClientDto,
-    ){}
+  constructor(public readonly query: GetOneClientDto) {}
 }

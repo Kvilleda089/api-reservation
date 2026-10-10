@@ -1,46 +1,48 @@
-import { RoleEnum } from "../../../../common/enum/role.enum";
-import { IsBoolean, IsEmail, IsEnum, IsOptional, IsString } from "class-validator";
-
+import { RoleEnum } from '../../../../common/enum/role.enum';
+import {
+  IsBoolean,
+  IsEmail,
+  IsEnum,
+  IsOptional,
+  IsString,
+} from 'class-validator';
 
 export class GetOneEmployeeFiltersDto {
+  @IsString()
+  @IsOptional()
+  firstName?: string;
 
+  @IsString()
+  @IsOptional()
+  middleName?: string;
 
-    @IsString()
-    @IsOptional()
-    firstName?: string;
+  @IsString()
+  @IsOptional()
+  surname?: string;
 
-    @IsString()
-    @IsOptional()
-    middleName?: string;
+  @IsString()
+  @IsOptional()
+  secondSurname?: string;
 
-    @IsString()
-    @IsOptional()
-    surname?: string;
+  @IsEmail()
+  @IsOptional()
+  email?: string;
 
-    @IsString()
-    @IsOptional()
-    secondSurname?: string;
+  @IsString()
+  @IsOptional()
+  username?: string;
 
-    @IsEmail()
-    @IsOptional()
-    email?: string;
+  @IsString()
+  @IsOptional()
+  phoneNumber?: string;
 
-    @IsString()
-    @IsOptional()
-    username?: string;
+  @IsEnum(RoleEnum, {
+    message: `Valores no validos, solo se permite ${RoleEnum}`,
+  })
+  @IsOptional()
+  role?: RoleEnum;
 
-    @IsString()
-    @IsOptional()
-    phoneNumber?: string;
-
-    @IsEnum(RoleEnum, {
-        message: `Valores no validos, solo se permite ${RoleEnum}`
-    })
-    @IsOptional()
-    role?: RoleEnum;
-
-    @IsBoolean()
-    @IsOptional()
-    status?: boolean;
-
+  @IsBoolean()
+  @IsOptional()
+  status?: boolean;
 }

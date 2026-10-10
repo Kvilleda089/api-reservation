@@ -1,17 +1,14 @@
-import { RoleEnum } from "src/common/enum/role.enum";
-
+import { RoleEnum } from 'src/common/enum/role.enum';
 
 export class LoginResponseDto {
-    
-    accessToken: string;
-    employee: EmployeeAuth;
+  accessToken: string;
+  employee: EmployeeAuth;
 }
 
-
 export class EmployeeAuth {
-    id: string;
-    username: string;
-    firstName: string;
-    surname: string;
-    role: RoleEnum;
+  id: string;
+  username: string;
+  firstName: string;
+  surname: string;
+  role: RoleEnum;
 }
