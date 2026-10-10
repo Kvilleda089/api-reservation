@@ -5,15 +5,8 @@ import { ReservationDepositController } from './controller/reservation-deposit.c
 import { ReservationDepositsHandlers } from './query/handler';
 
 @Module({
-    imports:[PrismaModule],
-    providers:[
-        CreateReservationDepositHandler,
-        ...ReservationDepositsHandlers,
-
-    ],
-    controllers:[
-        ReservationDepositController,
-        
-    ]
+  imports: [PrismaModule],
+  providers: [CreateReservationDepositHandler, ...ReservationDepositsHandlers],
+  controllers: [ReservationDepositController],
 })
 export class ReservationDepositModule {}

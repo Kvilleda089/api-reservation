@@ -2,7 +2,6 @@ import { createPrismaMock, PrismaMock } from 'test/helpers/prisma.mock';
 import { LogoutHandler } from '../command/handler/logout.handler';
 import { LogoutCommand } from '../command/impl';
 
-
 jest.mock('src/database/prisma.service', () => ({
   PrismaService: class {},
 }));
@@ -31,7 +30,9 @@ describe('LogoutHandler', () => {
     prisma.userSession.updateMany.mockResolvedValue({ count: 0 });
 
     await expect(
-      handler.execute(new LogoutCommand('emp-1', 'KV1234', 'token-ya-revocado')),
+      handler.execute(
+        new LogoutCommand('emp-1', 'KV1234', 'token-ya-revocado'),
+      ),
     ).resolves.toBeUndefined();
 
     const { where } = prisma.userSession.updateMany.mock.calls[0][0];

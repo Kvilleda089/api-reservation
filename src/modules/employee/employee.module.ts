@@ -5,14 +5,8 @@ import { EmployeeController } from './controller/employee.controller';
 import { EmployeeQueryHandlers } from './query/handler';
 
 @Module({
-
-    imports:[PrismaModule],
-    providers:[
-        ...EmployeeCommandHandlers,
-        ...EmployeeQueryHandlers
-    ],
-    controllers: [
-        EmployeeController,
-    ]
+  imports: [PrismaModule],
+  providers: [...EmployeeCommandHandlers, ...EmployeeQueryHandlers],
+  controllers: [EmployeeController],
 })
 export class EmployeeModule {}

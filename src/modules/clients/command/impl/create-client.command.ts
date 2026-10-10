@@ -1,9 +1,6 @@
-import { ICommand } from "@nestjs/cqrs";
-import { CreateClientDto } from "../../domain/dto";
-
+import { ICommand } from '@nestjs/cqrs';
+import { CreateClientDto } from '../../domain/dto';
 
 export class CreateClientCommand implements ICommand {
-    constructor(
-        public readonly data: CreateClientDto,
-    ){}
+  constructor(public readonly data: CreateClientDto) {}
 }

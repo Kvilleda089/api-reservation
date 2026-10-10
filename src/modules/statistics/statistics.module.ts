@@ -4,10 +4,8 @@ import { StatisticsController } from './controllers/statistics.controller';
 import { GetStatisticsByPeriodHandler } from './query/handler/get-statistics-by-period.handler';
 
 @Module({
-    imports: [PrismaModule,],
-    controllers:[StatisticsController],
-    providers:[
-        GetStatisticsByPeriodHandler
-    ]
+  imports: [PrismaModule],
+  controllers: [StatisticsController],
+  providers: [GetStatisticsByPeriodHandler],
 })
 export class StatisticsModule {}

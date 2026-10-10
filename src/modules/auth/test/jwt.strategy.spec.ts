@@ -8,7 +8,12 @@ describe('JwtStrategy.validate', () => {
   let prisma: PrismaMock;
   let strategy: JwtStrategy;
 
-  const payload = { sub: 'emp-1', username: 'KV1234', role: 'ADMINISTRATOR', jti: 'token-1' };
+  const payload = {
+    sub: 'emp-1',
+    username: 'KV1234',
+    role: 'ADMINISTRATOR',
+    jti: 'token-1',
+  };
 
   beforeEach(() => {
     prisma = createPrismaMock();
@@ -16,30 +21,49 @@ describe('JwtStrategy.validate', () => {
   });
 
   it('rechaza un token sin jti', async () => {
-    const { jti, ...withoutJti } = payload;
+    const withoutJti = { ...payload };
+    delete withoutJti.jti;
 
-    await expect(strategy.validate(withoutJti)).rejects.toThrow(UnauthorizedException);
-    await expect(strategy.validate(withoutJti)).rejects.toThrow(/Sesión inválida/);
+    await expect(strategy.validate(withoutJti)).rejects.toThrow(
+      UnauthorizedException,
+    );
+    await expect(strategy.validate(withoutJti)).rejects.toThrow(
+      /Sesión inválida/,
+    );
     expect(prisma.userSession.findUnique).not.toHaveBeenCalled();
   });
 
   it('rechaza si la sesión no existe', async () => {
     prisma.userSession.findUnique.mockResolvedValue(null);
 
-    await expect(strategy.validate(payload)).rejects.toThrow(UnauthorizedException);
-    await expect(strategy.validate(payload)).rejects.toThrow(/sesión fue cerrada/);
+    await expect(strategy.validate(payload)).rejects.toThrow(
+      UnauthorizedException,
+    );
+    await expect(strategy.validate(payload)).rejects.toThrow(
+      /sesión fue cerrada/,
+    );
   });
 
   it('rechaza si la sesión fue revocada (logout)', async () => {
-    prisma.userSession.findUnique.mockResolvedValue({ tokenId: 'token-1', revokedAt: new Date() });
+    prisma.userSession.findUnique.mockResolvedValue({
+      tokenId: 'token-1',
+      revokedAt: new Date(),
+    });
 
-    await expect(strategy.validate(payload)).rejects.toThrow(UnauthorizedException);
+    await expect(strategy.validate(payload)).rejects.toThrow(
+      UnauthorizedException,
+    );
   });
 
   it('acepta una sesión vigente y devuelve el payload', async () => {
-    prisma.userSession.findUnique.mockResolvedValue({ tokenId: 'token-1', revokedAt: null });
+    prisma.userSession.findUnique.mockResolvedValue({
+      tokenId: 'token-1',
+      revokedAt: null,
+    });
 
     await expect(strategy.validate(payload)).resolves.toBe(payload);
-    expect(prisma.userSession.findUnique).toHaveBeenCalledWith({ where: { tokenId: 'token-1' } });
+    expect(prisma.userSession.findUnique).toHaveBeenCalledWith({
+      where: { tokenId: 'token-1' },
+    });
   });
 });

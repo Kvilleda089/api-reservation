@@ -10,7 +10,8 @@ jest.mock('src/database/prisma.service', () => ({
   PrismaService: class {},
 }));
 
-const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+const UUID_REGEX =
+  /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
 describe('LoginHandler', () => {
   let prisma: PrismaMock;
@@ -55,7 +56,11 @@ describe('LoginHandler', () => {
     expect(compare).toHaveBeenCalledWith('secret', 'hashed-password');
 
     const [payload, options] = jwtService.sign.mock.calls[0];
-    expect(payload).toEqual({ sub: 'emp-1', username: 'KV1234', role: 'ADMINISTRATOR' });
+    expect(payload).toEqual({
+      sub: 'emp-1',
+      username: 'KV1234',
+      role: 'ADMINISTRATOR',
+    });
     expect(options.jwtid).toMatch(UUID_REGEX);
 
     expect(prisma.userSession.create).toHaveBeenCalledWith({
@@ -96,7 +101,9 @@ describe('LoginHandler', () => {
     await handler.execute(command);
     await handler.execute(command);
 
-    const [first, second] = jwtService.sign.mock.calls.map(([, opts]) => opts.jwtid);
+    const [first, second] = jwtService.sign.mock.calls.map(
+      ([, opts]) => opts.jwtid,
+    );
     expect(first).not.toBe(second);
   });
 
@@ -104,7 +111,9 @@ describe('LoginHandler', () => {
     prisma.employee.findFirst.mockResolvedValue(null);
 
     await expect(handler.execute(command)).rejects.toThrow(BadRequestException);
-    await expect(handler.execute(command)).rejects.toThrow(/no se ha encontrado información/i);
+    await expect(handler.execute(command)).rejects.toThrow(
+      /no se ha encontrado información/i,
+    );
     expect(compare).not.toHaveBeenCalled();
     expect(jwtService.sign).not.toHaveBeenCalled();
     expect(prisma.userSession.create).not.toHaveBeenCalled();
@@ -115,7 +124,9 @@ describe('LoginHandler', () => {
     compare.mockResolvedValue(false);
 
     await expect(handler.execute(command)).rejects.toThrow(BadRequestException);
-    await expect(handler.execute(command)).rejects.toThrow(/Credenciales incorrectas/);
+    await expect(handler.execute(command)).rejects.toThrow(
+      /Credenciales incorrectas/,
+    );
     expect(jwtService.sign).not.toHaveBeenCalled();
     expect(prisma.userSession.create).not.toHaveBeenCalled();
   });
@@ -124,7 +135,10 @@ describe('LoginHandler', () => {
     prisma.employee.findFirst.mockResolvedValue(employee);
     compare.mockResolvedValue(true);
     prisma.userSession.create.mockRejectedValue(
-      new Prisma.PrismaClientKnownRequestError('dup', { code: 'P2002', clientVersion: 'test' }),
+      new Prisma.PrismaClientKnownRequestError('dup', {
+        code: 'P2002',
+        clientVersion: 'test',
+      }),
     );
 
     await expect(handler.execute(command)).rejects.toThrow(ConflictException);

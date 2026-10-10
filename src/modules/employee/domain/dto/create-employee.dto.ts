@@ -1,10 +1,15 @@
-import { IsDate, IsEmail, IsEnum, IsNotEmpty, IsOptional, IsString } from "class-validator";
-import { RoleEnum } from "../../../../common/enum/role.enum";
-import { Type } from "class-transformer";
-
+import {
+  IsDate,
+  IsEmail,
+  IsEnum,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+} from 'class-validator';
+import { RoleEnum } from '../../../../common/enum/role.enum';
+import { Type } from 'class-transformer';
 
 export class CreateEmployeeDto {
-
   @IsString()
   @IsNotEmpty()
   firstName: string;
@@ -38,7 +43,7 @@ export class CreateEmployeeDto {
   password: string;
 
   @IsEnum(RoleEnum, {
-    message: `Valor no valido, solo se permite valores ${RoleEnum}`
+    message: `Valor no valido, solo se permite valores ${RoleEnum}`,
   })
   role: RoleEnum;
 
