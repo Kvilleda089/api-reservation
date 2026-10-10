@@ -12,112 +12,98 @@ import { buildPaginationResponse } from 'src/common/utils/pagination-response.he
 
 @QueryHandler(GetOneClientQuery)
 export class GetOneClientHandler implements IQueryHandler<GetOneClientQuery> {
+  private readonly logger = new Logger(GetOneClientHandler.name);
 
-    private readonly logger = new Logger(GetOneClientHandler.name);
+  constructor(private readonly prismaService: PrismaService) {}
 
-    constructor(
-        private readonly prismaService: PrismaService,
-    ) {}
+  async execute(query: GetOneClientQuery): Promise<ResponseDto<Client[]>> {
+    try {
+      const result = await this.getClientsByFilter(query.query);
 
-    async execute(query: GetOneClientQuery): Promise<ResponseDto<Client[]>> {
-        try {
+      return buildPaginationResponse(
+        result.clients,
+        result.pagination,
+        'Información encontrada',
+      );
+    } catch (error) {
+      this.logger.error('Error al obtener clientes', error);
+      handlePrismaError(error, 'Error al obtener clientes');
+    }
+  }
 
-            const result = await this.getClientsByFilter(
-                query.query,
-            );
+  private async getClientsByFilter(query: GetOneClientDto) {
+    const {
+      page = 1,
+      limit = 10,
+      id,
+      firstName,
+      surName,
+      email,
+      phoneNumber,
+    } = query;
 
-            return buildPaginationResponse(
-                result.clients,
-                result.pagination,
-                'Información encontrada',
-            );
+    const where = {
+      ...(id && {
+        id,
+      }),
 
-        } catch (error) {
-            this.logger.error('Error al obtener clientes', error);
-            handlePrismaError(
-                error,
-                'Error al obtener clientes',
-            );
-        }
+      ...(firstName && {
+        firstName: {
+          contains: firstName,
+          mode: 'insensitive' as const,
+        },
+      }),
+
+      ...(surName && {
+        surname: {
+          contains: surName,
+          mode: 'insensitive' as const,
+        },
+      }),
+
+      ...(email && {
+        email: {
+          contains: email,
+          mode: 'insensitive' as const,
+        },
+      }),
+
+      ...(phoneNumber && {
+        phoneNumber: {
+          contains: phoneNumber,
+          mode: 'insensitive' as const,
+        },
+      }),
+    };
+
+    const [totalRecords, clients] = await Promise.all([
+      this.prismaService.client.count({
+        where,
+      }),
+
+      this.prismaService.client.findMany({
+        where,
+        skip: (page - 1) * limit,
+        take: limit,
+      }),
+    ]);
+
+    if (clients.length === 0) {
+      this.logger.log(
+        `Cliente no encontrado con los parámetros enviados: ${getClientFilterMessage(query)}`,
+      );
+      throw new NotFoundException(
+        `Cliente no encontrado con los parámetros enviados: ${getClientFilterMessage(query)}`,
+      );
     }
 
-    private async getClientsByFilter(query: GetOneClientDto) {
-
-        const {
-            page = 1,
-            limit = 10,
-            id,
-            firstName,
-            surName,
-            email,
-            phoneNumber,
-        } = query;
-
-        const where = {
-
-            ...(id && {
-                id,
-            }),
-
-            ...(firstName && {
-                firstName: {
-                    contains: firstName,
-                    mode: 'insensitive' as const,
-                },
-            }),
-
-            ...(surName && {
-                surname: {
-                    contains: surName,
-                    mode: 'insensitive' as const,
-                },
-            }),
-
-            ...(email && {
-                email: {
-                    contains: email,
-                    mode: 'insensitive' as const,
-                },
-            }),
-
-            ...(phoneNumber && {
-                phoneNumber: {
-                    contains: phoneNumber,
-                    mode: 'insensitive' as const,
-                },
-            }),
-
-        };
-
-        const [totalRecords, clients] = await Promise.all([
-
-            this.prismaService.client.count({
-                where,
-            }),
-
-            this.prismaService.client.findMany({
-                where,
-                skip: (page - 1) * limit,
-                take: limit,
-            }),
-
-        ]);
-
-        if (clients.length === 0) {
-            this.logger.log(`Cliente no encontrado con los parámetros enviados: ${getClientFilterMessage(query)}`,)
-            throw new NotFoundException(
-                `Cliente no encontrado con los parámetros enviados: ${getClientFilterMessage(query)}`,
-            );
-
-        }
-
-        return {
-            clients,
-            pagination: {
-                page,
-                limit,
-                totalRecords,
-            },
-        };
-    }
+    return {
+      clients,
+      pagination: {
+        page,
+        limit,
+        totalRecords,
+      },
+    };
+  }
 }

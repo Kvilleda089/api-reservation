@@ -1,69 +1,61 @@
-import { IQueryHandler, QueryHandler } from "@nestjs/cqrs";
-import { GetReservationCheckoutAvailableQuery } from "../imp/get-reservation-checkout-available.query";
-import { Logger } from "@nestjs/common";
-import { PrismaService } from "src/database/prisma.service";
-import { handlePrismaError } from "src/database/helpers/prisma-error.handler";
-import { GetReservationAvailableDto } from "../../domain/dto/get-reservation-available.dto";
-import { Reservation } from "src/generated/prisma/client";
-import { StatusReservationEnum } from "../../domain/enum";
-import { ResponseDto } from "src/common/dto";
-
+import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
+import { GetReservationCheckoutAvailableQuery } from '../imp/get-reservation-checkout-available.query';
+import { Logger } from '@nestjs/common';
+import { PrismaService } from 'src/database/prisma.service';
+import { handlePrismaError } from 'src/database/helpers/prisma-error.handler';
+import { GetReservationAvailableDto } from '../../domain/dto/get-reservation-available.dto';
+import { Reservation } from 'src/generated/prisma/client';
+import { StatusReservationEnum } from '../../domain/enum';
+import { ResponseDto } from 'src/common/dto';
 
 @QueryHandler(GetReservationCheckoutAvailableQuery)
 export class GetReservationCheckoutAvailableHandler implements IQueryHandler<GetReservationCheckoutAvailableQuery> {
+  private readonly logger = new Logger(
+    `${GetReservationCheckoutAvailableHandler.name}`,
+  );
 
+  constructor(private readonly prismaService: PrismaService) {}
 
-    private readonly logger = new Logger(`${GetReservationCheckoutAvailableHandler.name}`)
+  async execute(
+    query: GetReservationCheckoutAvailableQuery,
+  ): Promise<ResponseDto<Reservation[]>> {
+    try {
+      const result = await this.getReservationAvailable(query.filters);
 
-    constructor(
-        private readonly prismaService: PrismaService,
-    ) { }
-
-    async execute(query: GetReservationCheckoutAvailableQuery): Promise<ResponseDto<Reservation[]>> {
-        try {
-            const result = await this.getReservationAvailable(query.filters);
-
-
-            return {
-                statusCode: 200,
-                message: 'Resultados Obtenidos',
-                data: result,
-            }
-
-        } catch (error) {
-            this.logger.error(`Error to created Client error: ${error}`);
-            handlePrismaError(
-                error,
-                `Error al crear Cliente`
-            )
-        }
+      return {
+        statusCode: 200,
+        message: 'Resultados Obtenidos',
+        data: result,
+      };
+    } catch (error) {
+      this.logger.error(`Error to created Client error: ${error}`);
+      handlePrismaError(error, `Error al crear Cliente`);
     }
+  }
 
-    private async getReservationAvailable(filters: GetReservationAvailableDto): Promise<Reservation[]> {
-        const [hours, minutes] = filters.hour.split(':');
+  private async getReservationAvailable(
+    filters: GetReservationAvailableDto,
+  ): Promise<Reservation[]> {
+    const [hours, minutes] = filters.hour.split(':');
 
-        const hour = new Date(filters.reservationDate);
+    const hour = new Date(filters.reservationDate);
 
-        hour.setUTCHours(
-            Number(hours),
-            Number(minutes),
-            0,
-            0,
-        );
+    hour.setUTCHours(Number(hours), Number(minutes), 0, 0);
 
-        this.logger.log(`Buscando si esta disponible con los siguientes datos: ${JSON.stringify(filters)}`)
-        const reservation = await this.prismaService.reservation.findMany({
-            where: {
-                reservationDate: filters.reservationDate,
-                hour: hour,
-                reservationResource: filters.reservationResource,
-                status: {
-                    not: StatusReservationEnum.CANCELADA
-                },
-            },
-        });
+    this.logger.log(
+      `Buscando si esta disponible con los siguientes datos: ${JSON.stringify(filters)}`,
+    );
+    const reservation = await this.prismaService.reservation.findMany({
+      where: {
+        reservationDate: filters.reservationDate,
+        hour: hour,
+        reservationResource: filters.reservationResource,
+        status: {
+          not: StatusReservationEnum.CANCELADA,
+        },
+      },
+    });
 
-        return reservation;
-    }
-
+    return reservation;
+  }
 }

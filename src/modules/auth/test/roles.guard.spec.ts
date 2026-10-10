@@ -28,29 +28,39 @@ describe('RolesGuard', () => {
 
     guard.canActivate(contextWith({ role: RoleEnum.RECEPTIONIST }));
 
-    expect(reflector.getAllAndOverride).toHaveBeenCalledWith(ROLES_KEY, [handler, FakeController]);
+    expect(reflector.getAllAndOverride).toHaveBeenCalledWith(ROLES_KEY, [
+      handler,
+      FakeController,
+    ]);
   });
 
   it('permite el acceso cuando la ruta no exige roles', () => {
     reflector.getAllAndOverride.mockReturnValue(undefined);
 
-    expect(guard.canActivate(contextWith({ role: RoleEnum.CLEANING_STAFF }))).toBe(true);
+    expect(
+      guard.canActivate(contextWith({ role: RoleEnum.CLEANING_STAFF })),
+    ).toBe(true);
   });
 
   it('permite el acceso cuando el rol del usuario está en la lista', () => {
-    reflector.getAllAndOverride.mockReturnValue([RoleEnum.SUPER_ADMINISTRATOR, RoleEnum.ADMINISTRATOR]);
+    reflector.getAllAndOverride.mockReturnValue([
+      RoleEnum.SUPER_ADMINISTRATOR,
+      RoleEnum.ADMINISTRATOR,
+    ]);
 
-    expect(guard.canActivate(contextWith({ role: RoleEnum.ADMINISTRATOR }))).toBe(true);
+    expect(
+      guard.canActivate(contextWith({ role: RoleEnum.ADMINISTRATOR })),
+    ).toBe(true);
   });
 
   it('lanza ForbiddenException cuando el rol no está permitido', () => {
     reflector.getAllAndOverride.mockReturnValue([RoleEnum.SUPER_ADMINISTRATOR]);
 
-    expect(() => guard.canActivate(contextWith({ role: RoleEnum.RECEPTIONIST }))).toThrow(
-      ForbiddenException,
-    );
-    expect(() => guard.canActivate(contextWith({ role: RoleEnum.RECEPTIONIST }))).toThrow(
-      /no cuenta con los permisos adecuados/,
-    );
+    expect(() =>
+      guard.canActivate(contextWith({ role: RoleEnum.RECEPTIONIST })),
+    ).toThrow(ForbiddenException);
+    expect(() =>
+      guard.canActivate(contextWith({ role: RoleEnum.RECEPTIONIST })),
+    ).toThrow(/no cuenta con los permisos adecuados/);
   });
 });
