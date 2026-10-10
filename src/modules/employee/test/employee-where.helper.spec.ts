@@ -1,18 +1,22 @@
-import { buildEmployeeWhere } from "../common/helper/employee-where.helper";
+import { buildEmployeeWhere } from '../common/helper/employee-where.helper';
 
 describe('buildEmployeeWhere', () => {
   it('sin filtros devuelve un objeto vacío', () => {
     expect(buildEmployeeWhere({} as any)).toEqual({});
   });
 
-  it.each(['firstName', 'middleName', 'surname', 'secondSurname', 'email', 'username'])(
-    'filtra %s con contains e insensible a mayúsculas',
-    (field) => {
-      expect(buildEmployeeWhere({ [field]: 'abc' } as any)).toEqual({
-        [field]: { contains: 'abc', mode: 'insensitive' },
-      });
-    },
-  );
+  it.each([
+    'firstName',
+    'middleName',
+    'surname',
+    'secondSurname',
+    'email',
+    'username',
+  ])('filtra %s con contains e insensible a mayúsculas', (field) => {
+    expect(buildEmployeeWhere({ [field]: 'abc' } as any)).toEqual({
+      [field]: { contains: 'abc', mode: 'insensitive' },
+    });
+  });
 
   it('phoneNumber usa contains sin mode', () => {
     expect(buildEmployeeWhere({ phoneNumber: '5555' } as any)).toEqual({
@@ -21,12 +25,18 @@ describe('buildEmployeeWhere', () => {
   });
 
   it('role se compara por igualdad exacta', () => {
-    expect(buildEmployeeWhere({ role: 'ADMINISTRATOR' } as any)).toEqual({ role: 'ADMINISTRATOR' });
+    expect(buildEmployeeWhere({ role: 'ADMINISTRATOR' } as any)).toEqual({
+      role: 'ADMINISTRATOR',
+    });
   });
 
   it('status false se incluye (no se confunde con "sin filtro")', () => {
-    expect(buildEmployeeWhere({ status: false } as any)).toEqual({ status: false });
-    expect(buildEmployeeWhere({ status: true } as any)).toEqual({ status: true });
+    expect(buildEmployeeWhere({ status: false } as any)).toEqual({
+      status: false,
+    });
+    expect(buildEmployeeWhere({ status: true } as any)).toEqual({
+      status: true,
+    });
   });
 
   it('status undefined no agrega la condición', () => {
@@ -39,7 +49,11 @@ describe('buildEmployeeWhere', () => {
 
   it('combina varios filtros', () => {
     expect(
-      buildEmployeeWhere({ firstName: 'ana', role: 'RECEPTIONIST', status: true } as any),
+      buildEmployeeWhere({
+        firstName: 'ana',
+        role: 'RECEPTIONIST',
+        status: true,
+      } as any),
     ).toEqual({
       firstName: { contains: 'ana', mode: 'insensitive' },
       role: 'RECEPTIONIST',

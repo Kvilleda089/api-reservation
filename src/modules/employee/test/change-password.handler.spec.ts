@@ -5,11 +5,9 @@ import { createPrismaMock, PrismaMock } from 'test/helpers/prisma.mock';
 import { ChangePasswordHandler } from '../command/handler/change-password.handler';
 import { ChangePasswordCommand } from '../command/impl';
 
-
 jest.mock('src/database/prisma.service', () => ({
   PrismaService: class {},
 }));
-
 
 jest.mock('bcrypt', () => ({ hash: jest.fn(), compare: jest.fn() }));
 
@@ -32,7 +30,10 @@ describe('ChangePasswordHandler', () => {
   });
 
   it('cambia la contraseña cuando la actual es correcta', async () => {
-    prisma.employee.findFirst.mockResolvedValue({ id: 'emp-1', password: 'old-hash' });
+    prisma.employee.findFirst.mockResolvedValue({
+      id: 'emp-1',
+      password: 'old-hash',
+    });
     compare.mockResolvedValue(true);
     prisma.employee.update.mockResolvedValue({ id: 'emp-1' });
 
@@ -65,7 +66,10 @@ describe('ChangePasswordHandler', () => {
   });
 
   it('lanza BadRequestException si la contraseña actual es incorrecta y no actualiza', async () => {
-    prisma.employee.findFirst.mockResolvedValue({ id: 'emp-1', password: 'old-hash' });
+    prisma.employee.findFirst.mockResolvedValue({
+      id: 'emp-1',
+      password: 'old-hash',
+    });
     compare.mockResolvedValue(false);
 
     await expect(handler.execute(command)).rejects.toThrow(BadRequestException);

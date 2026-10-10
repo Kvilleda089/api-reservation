@@ -2,11 +2,9 @@ import { createPrismaMock, PrismaMock } from 'test/helpers/prisma.mock';
 import { GetAllReservationHandler } from '../query/handler/get-all-reservation.handler';
 import { GetAllReservationQuery } from '../query/imp/get-all-reservation.query';
 
-
 jest.mock('src/database/prisma.service', () => ({
   PrismaService: class {},
 }));
-
 
 describe('GetAllReservationHandler', () => {
   let prisma: PrismaMock;
@@ -44,7 +42,12 @@ describe('GetAllReservationHandler', () => {
     prisma.reservation.findMany.mockResolvedValue([]);
 
     const result = await handler.execute(
-      new GetAllReservationQuery({ page: 2, limit: 5, status: 'CONFIRMADA', client: 'ana' } as any),
+      new GetAllReservationQuery({
+        page: 2,
+        limit: 5,
+        status: 'CONFIRMADA',
+        client: 'ana',
+      } as any),
     );
 
     const where = {
@@ -64,12 +67,19 @@ describe('GetAllReservationHandler', () => {
       take: 5,
       include: { client: true },
     });
-    expect(result.pagination).toEqual({ page: 2, limit: 5, totalRecords: 11, lastPage: 3 });
+    expect(result.pagination).toEqual({
+      page: 2,
+      limit: 5,
+      totalRecords: 11,
+      lastPage: 3,
+    });
   });
 
   it('relanza errores inesperados', async () => {
     prisma.reservation.count.mockRejectedValue(new Error('db caída'));
 
-    await expect(handler.execute(new GetAllReservationQuery({}))).rejects.toThrow('db caída');
+    await expect(
+      handler.execute(new GetAllReservationQuery({})),
+    ).rejects.toThrow('db caída');
   });
 });

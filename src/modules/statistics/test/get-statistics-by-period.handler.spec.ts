@@ -4,7 +4,6 @@ import { createPrismaMock, PrismaMock } from 'test/helpers/prisma.mock';
 import { GetStatisticsByPeriodHandler } from '../query/handler/get-statistics-by-period.handler';
 import { GetStatisticsByPeriodQuery } from '../query/impl/get-statistics-by-period.query';
 
-
 jest.mock('src/database/prisma.service', () => ({
   PrismaService: class {},
 }));
@@ -15,10 +14,34 @@ describe('GetStatisticsByPeriodHandler', () => {
 
   const day = (d: string) => new Date(`${d}T00:00:00.000Z`);
   const reservations = [
-    { reservationDate: day('2026-10-14'), status: 'CONFIRMADA', reservationResource: 'CANCHA_1', totalReservation: '200.00', deposits: [{ amount: '100.00' }] },
-    { reservationDate: day('2026-10-14'), status: 'PENDIENTE', reservationResource: 'CANCHA_2', totalReservation: '150.00', deposits: [] },
-    { reservationDate: day('2026-10-12'), status: 'CANCELADA', reservationResource: 'SALON', totalReservation: '300.00', deposits: [{ amount: '50.00' }, { amount: '25.50' }] },
-    { reservationDate: day('2026-10-13'), status: 'FINALIZADA', reservationResource: 'CANCHA_1', totalReservation: '100.00', deposits: [{ amount: '100.00' }] },
+    {
+      reservationDate: day('2026-10-14'),
+      status: 'CONFIRMADA',
+      reservationResource: 'CANCHA_1',
+      totalReservation: '200.00',
+      deposits: [{ amount: '100.00' }],
+    },
+    {
+      reservationDate: day('2026-10-14'),
+      status: 'PENDIENTE',
+      reservationResource: 'CANCHA_2',
+      totalReservation: '150.00',
+      deposits: [],
+    },
+    {
+      reservationDate: day('2026-10-12'),
+      status: 'CANCELADA',
+      reservationResource: 'SALON',
+      totalReservation: '300.00',
+      deposits: [{ amount: '50.00' }, { amount: '25.50' }],
+    },
+    {
+      reservationDate: day('2026-10-13'),
+      status: 'FINALIZADA',
+      reservationResource: 'CANCHA_1',
+      totalReservation: '100.00',
+      deposits: [{ amount: '100.00' }],
+    },
   ];
 
   beforeEach(() => {
@@ -30,7 +53,8 @@ describe('GetStatisticsByPeriodHandler', () => {
 
   afterEach(() => jest.useRealTimers());
 
-  const run = (period: any) => handler.execute(new GetStatisticsByPeriodQuery(period));
+  const run = (period: any) =>
+    handler.execute(new GetStatisticsByPeriodQuery(period));
 
   describe('rangos de fechas', () => {
     it('week: de domingo a domingo siguiente', async () => {
@@ -99,7 +123,11 @@ describe('GetStatisticsByPeriodHandler', () => {
     it('cuenta reservaciones por recurso', async () => {
       const result = await run('week');
 
-      expect(result.reservationsByResource).toEqual({ CANCHA_1: 2, CANCHA_2: 1, SALON: 1 });
+      expect(result.reservationsByResource).toEqual({
+        CANCHA_1: 2,
+        CANCHA_2: 1,
+        SALON: 1,
+      });
     });
 
     it('sin reservaciones todo queda en cero', async () => {
@@ -116,7 +144,11 @@ describe('GetStatisticsByPeriodHandler', () => {
         totalRevenue: 0,
         totalDeposits: 0,
       });
-      expect(reservationsByResource).toEqual({ CANCHA_1: 0, CANCHA_2: 0, SALON: 0 });
+      expect(reservationsByResource).toEqual({
+        CANCHA_1: 0,
+        CANCHA_2: 0,
+        SALON: 0,
+      });
     });
   });
 
@@ -140,7 +172,10 @@ describe('GetStatisticsByPeriodHandler', () => {
 
       expect(reservationsTimeline).toHaveLength(31);
       expect(reservationsTimeline[0]).toEqual({ label: '01', reservations: 0 });
-      expect(reservationsTimeline[13]).toEqual({ label: '14', reservations: 2 });
+      expect(reservationsTimeline[13]).toEqual({
+        label: '14',
+        reservations: 2,
+      });
       expect(reservationsTimeline[30].label).toBe('31');
     });
 
@@ -150,14 +185,20 @@ describe('GetStatisticsByPeriodHandler', () => {
       expect(reservationsTimeline).toHaveLength(12);
       expect(reservationsTimeline[0].label).toBe('Ene');
       expect(reservationsTimeline[8].label).toBe('Sep');
-      expect(reservationsTimeline[9]).toEqual({ label: 'Oct', reservations: 4 });
+      expect(reservationsTimeline[9]).toEqual({
+        label: 'Oct',
+        reservations: 4,
+      });
       expect(reservationsTimeline[11].label).toBe('Dic');
     });
   });
 
   it('traduce errores de Prisma (P2003 -> BadRequestException)', async () => {
     prisma.reservation.findMany.mockRejectedValue(
-      new Prisma.PrismaClientKnownRequestError('x', { code: 'P2003', clientVersion: 'test' }),
+      new Prisma.PrismaClientKnownRequestError('x', {
+        code: 'P2003',
+        clientVersion: 'test',
+      }),
     );
 
     await expect(run('week')).rejects.toThrow(BadRequestException);

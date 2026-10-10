@@ -16,23 +16,39 @@ describe('handlePrismaError', () => {
   const MSG = 'Error al guardar';
 
   it('P2000 -> BadRequestException (valor demasiado largo)', () => {
-    expect(() => handlePrismaError(prismaError('P2000'), MSG)).toThrow(BadRequestException);
-    expect(() => handlePrismaError(prismaError('P2000'), MSG)).toThrow(/demasiado largo/);
+    expect(() => handlePrismaError(prismaError('P2000'), MSG)).toThrow(
+      BadRequestException,
+    );
+    expect(() => handlePrismaError(prismaError('P2000'), MSG)).toThrow(
+      /demasiado largo/,
+    );
   });
 
   it('P2002 -> ConflictException (valor duplicado)', () => {
-    expect(() => handlePrismaError(prismaError('P2002'), MSG)).toThrow(ConflictException);
-    expect(() => handlePrismaError(prismaError('P2002'), MSG)).toThrow(`${MSG}: el valor ya existe.`);
+    expect(() => handlePrismaError(prismaError('P2002'), MSG)).toThrow(
+      ConflictException,
+    );
+    expect(() => handlePrismaError(prismaError('P2002'), MSG)).toThrow(
+      `${MSG}: el valor ya existe.`,
+    );
   });
 
   it('P2003 -> BadRequestException (referencia inválida)', () => {
-    expect(() => handlePrismaError(prismaError('P2003'), MSG)).toThrow(BadRequestException);
-    expect(() => handlePrismaError(prismaError('P2003'), MSG)).toThrow(/referencia inválida/);
+    expect(() => handlePrismaError(prismaError('P2003'), MSG)).toThrow(
+      BadRequestException,
+    );
+    expect(() => handlePrismaError(prismaError('P2003'), MSG)).toThrow(
+      /referencia inválida/,
+    );
   });
 
   it('P2025 -> NotFoundException (registro inexistente)', () => {
-    expect(() => handlePrismaError(prismaError('P2025'), MSG)).toThrow(NotFoundException);
-    expect(() => handlePrismaError(prismaError('P2025'), MSG)).toThrow(/el registro no existe/);
+    expect(() => handlePrismaError(prismaError('P2025'), MSG)).toThrow(
+      NotFoundException,
+    );
+    expect(() => handlePrismaError(prismaError('P2025'), MSG)).toThrow(
+      /el registro no existe/,
+    );
   });
 
   it('un código de Prisma no mapeado se relanza tal cual', () => {

@@ -3,9 +3,6 @@ import { createPrismaMock, PrismaMock } from 'test/helpers/prisma.mock';
 import { GetOneReservationDepositHandler } from '../query/handler/get-one-reservation-deposit-byId.handler';
 import { GetOneReservationDepositByIdQuery } from '../query/impl/get-one-reservation-deposit-byId.query';
 
-
-
-
 jest.mock('src/database/prisma.service', () => ({
   PrismaService: class {},
 }));
@@ -23,17 +20,27 @@ describe('GetOneReservationDepositHandler', () => {
     const deposits = [{ id: 'd1' }];
     prisma.reservationDeposit.findMany.mockResolvedValue(deposits);
 
-    const result = await handler.execute(new GetOneReservationDepositByIdQuery('d1', undefined));
+    const result = await handler.execute(
+      new GetOneReservationDepositByIdQuery('d1', undefined),
+    );
 
-    expect(prisma.reservationDeposit.findMany).toHaveBeenCalledWith({ where: { id: 'd1' } });
-    expect(result).toEqual({ statusCode: 200, message: 'Resultados encontrados', data: deposits });
+    expect(prisma.reservationDeposit.findMany).toHaveBeenCalledWith({
+      where: { id: 'd1' },
+    });
+    expect(result).toEqual({
+      statusCode: 200,
+      message: 'Resultados encontrados',
+      data: deposits,
+    });
   });
 
   it('busca por reservationId y devuelve todos sus abonos', async () => {
     const deposits = [{ id: 'd1' }, { id: 'd2' }];
     prisma.reservationDeposit.findMany.mockResolvedValue(deposits);
 
-    const result = await handler.execute(new GetOneReservationDepositByIdQuery(undefined, 'res-1'));
+    const result = await handler.execute(
+      new GetOneReservationDepositByIdQuery(undefined, 'res-1'),
+    );
 
     expect(prisma.reservationDeposit.findMany).toHaveBeenCalledWith({
       where: { reservationId: 'res-1' },

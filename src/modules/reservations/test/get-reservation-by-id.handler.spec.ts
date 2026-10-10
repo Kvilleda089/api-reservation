@@ -36,14 +36,16 @@ describe('GetReservationByIdHandler', () => {
   it('lanza NotFoundException si no existe', async () => {
     prisma.reservation.findFirst.mockResolvedValue(null);
 
-    await expect(handler.execute(new GetReservationByIdQuery('nada'))).rejects.toThrow(
-      NotFoundException,
-    );
+    await expect(
+      handler.execute(new GetReservationByIdQuery('nada')),
+    ).rejects.toThrow(NotFoundException);
   });
 
   it('relanza errores inesperados', async () => {
     prisma.reservation.findFirst.mockRejectedValue(new Error('db caída'));
 
-    await expect(handler.execute(new GetReservationByIdQuery('res-1'))).rejects.toThrow('db caída');
+    await expect(
+      handler.execute(new GetReservationByIdQuery('res-1')),
+    ).rejects.toThrow('db caída');
   });
 });

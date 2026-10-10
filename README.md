@@ -75,7 +75,7 @@ npx prisma generate
 
 ---
 
-## Crear el administrador inicial 
+## Crear el administrador inicial
 
 La aplicación utiliza autenticación y autorización basada en roles. Por esta razón, una base de datos nueva necesita contar inicialmente con un usuario que tenga el rol SUPER_ADMINISTRATOR.
 
@@ -105,18 +105,20 @@ Si ya existe un SUPER_ADMINISTRATOR, no crea otro administrador.
 El seed está diseñado para poder ejecutarse de forma segura más de una vez. Si ya existe un SUPER_ADMINISTRATOR, el proceso no crea un usuario duplicado.
 
 ---
+
 ### 7. Ejecuta la aplicación
 
 ```bash
 npm run start:dev
 ```
+
 La API estará disponible en:
 
 ```text
 http://localhost:3000
 ```
 
-### 8.  Detener la base de datos
+### 8. Detener la base de datos
 
 Cuando termines de utilizar la aplicación:
 
@@ -138,8 +140,8 @@ DATABASE_URL="postgresql://USER:PASSWORD@localhost:5432/reserva_facil"
 JWT_SECRET="your-secret-key"
 JWT_EXPIRES_IN="1h"
 ```
-Crea tu archivo `.env` local a partir de `.env.example` y configura los valores según tu entorno.
 
+Crea tu archivo `.env` local a partir de `.env.example` y configura los valores según tu entorno.
 
 ## ✨ Características
 
@@ -163,17 +165,17 @@ Crea tu archivo `.env` local a partir de `.env.example` y configura los valores 
 
 ## 🛠️ Tecnologías utilizadas
 
-| Tecnología | Uso |
-|---|---|
-| **Node.js** | Entorno de ejecución |
-| **NestJS** | Framework backend |
-| **TypeScript** | Lenguaje de programación |
-| **Prisma** | ORM |
-| **PostgreSQL** | Base de datos |
-| **JWT** | Autenticación |
-| **Passport** | Estrategia de autenticación |
-| **bcrypt** | Hash de contraseñas |
-| **CQRS** | Separación de comandos y consultas |
+| Tecnología     | Uso                                |
+| -------------- | ---------------------------------- |
+| **Node.js**    | Entorno de ejecución               |
+| **NestJS**     | Framework backend                  |
+| **TypeScript** | Lenguaje de programación           |
+| **Prisma**     | ORM                                |
+| **PostgreSQL** | Base de datos                      |
+| **JWT**        | Autenticación                      |
+| **Passport**   | Estrategia de autenticación        |
+| **bcrypt**     | Hash de contraseñas                |
+| **CQRS**       | Separación de comandos y consultas |
 
 ---
 
@@ -222,3 +224,4 @@ src/
 ├── generated/
 │
 └── main.ts
+```

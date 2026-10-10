@@ -6,8 +6,6 @@ import { CreateReservationHandler } from '../command/handler/create-reservation.
 import { CreateReservationCommand } from '../command/impl/create-reservation.command';
 import { GetReservationCheckoutAvailableQuery } from '../query/imp/get-reservation-checkout-available.query';
 
-
-
 jest.mock('src/database/prisma.service', () => ({
   PrismaService: class {},
 }));
@@ -19,7 +17,11 @@ describe('CreateReservationHandler', () => {
   let handler: CreateReservationHandler;
 
   const reservationDate = new Date('2026-10-20T00:00:00.000Z');
-  const client: any = { firstName: 'Ana', surname: 'Pérez', phoneNumber: '55512345' };
+  const client: any = {
+    firstName: 'Ana',
+    surname: 'Pérez',
+    phoneNumber: '55512345',
+  };
   const reservation: any = {
     hour: '18:30',
     reservationDate,
@@ -37,13 +39,21 @@ describe('CreateReservationHandler', () => {
     prisma = createPrismaMock();
     queryBus = { execute: jest.fn().mockResolvedValue({ data: [] }) }; // horario libre
     commandBus = {
-      execute: jest.fn().mockImplementation(async (cmd) =>
-        cmd instanceof CreateClientCommand ? { data: { id: 'c-new' } } : undefined,
-      ),
+      execute: jest
+        .fn()
+        .mockImplementation(async (cmd) =>
+          cmd instanceof CreateClientCommand
+            ? { data: { id: 'c-new' } }
+            : undefined,
+        ),
     };
     prisma.client.findFirst.mockResolvedValue({ id: 'c1' });
     prisma.reservation.create.mockResolvedValue(created);
-    handler = new CreateReservationHandler(prisma as any, queryBus as any, commandBus as any);
+    handler = new CreateReservationHandler(
+      prisma as any,
+      queryBus as any,
+      commandBus as any,
+    );
   });
 
   it('crea la reservación para un cliente existente (buscado por teléfono activo)', async () => {
@@ -79,7 +89,9 @@ describe('CreateReservationHandler', () => {
     const sent = commandBus.execute.mock.calls[0][0];
     expect(sent).toBeInstanceOf(CreateClientCommand);
     expect(sent.data).toBe(client);
-    expect(prisma.reservation.create.mock.calls[0][0].data.clientId).toBe('c-new');
+    expect(prisma.reservation.create.mock.calls[0][0].data.clientId).toBe(
+      'c-new',
+    );
   });
 
   it('valida disponibilidad con fecha, recurso y hora antes de crear', async () => {
@@ -98,7 +110,9 @@ describe('CreateReservationHandler', () => {
     queryBus.execute.mockResolvedValue({ data: [{ id: 'otra' }] });
 
     await expect(handler.execute(build())).rejects.toThrow(ConflictException);
-    await expect(handler.execute(build())).rejects.toThrow(/no está disponible/);
+    await expect(handler.execute(build())).rejects.toThrow(
+      /no está disponible/,
+    );
     expect(prisma.reservation.create).not.toHaveBeenCalled();
     expect(commandBus.execute).not.toHaveBeenCalled();
   });
@@ -109,7 +123,10 @@ describe('CreateReservationHandler', () => {
     const depositCommand = commandBus.execute.mock.calls
       .map(([cmd]) => cmd)
       .find((cmd) => cmd instanceof CreateReservationDepositCommand);
-    expect(depositCommand!.data).toEqual({ reservationId: 'res-1', amount: 50 });
+    expect(depositCommand!.data).toEqual({
+      reservationId: 'res-1',
+      amount: 50,
+    });
   });
 
   it('no registra abono cuando no viene en la solicitud', async () => {

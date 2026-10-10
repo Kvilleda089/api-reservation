@@ -3,12 +3,9 @@ import { createPrismaMock, PrismaMock } from 'test/helpers/prisma.mock';
 import { CreateReservationDepositHandler } from '../command/handler/create-reservation-deposit.handler';
 import { CreateReservationDepositCommand } from '../command/impl/create-reservation-deposit.command';
 
-
 jest.mock('src/database/prisma.service', () => ({
   PrismaService: class {},
 }));
-
-
 
 describe('CreateReservationDepositHandler', () => {
   let prisma: PrismaMock;
@@ -26,7 +23,10 @@ describe('CreateReservationDepositHandler', () => {
 
   beforeEach(() => {
     prisma = createPrismaMock();
-    prisma.reservationDeposit.create.mockImplementation(async ({ data }) => ({ id: 'dep-1', ...data }));
+    prisma.reservationDeposit.create.mockImplementation(async ({ data }) => ({
+      id: 'dep-1',
+      ...data,
+    }));
     handler = new CreateReservationDepositHandler(prisma as any);
   });
 
@@ -63,7 +63,9 @@ describe('CreateReservationDepositHandler', () => {
     prisma.reservation.findFirst.mockResolvedValue(reservation());
     prisma.reservationDeposit.aggregate.mockResolvedValue(deposited(null));
 
-    await expect(handler.execute(command(100))).resolves.toMatchObject({ statusCode: 201 });
+    await expect(handler.execute(command(100))).resolves.toMatchObject({
+      statusCode: 201,
+    });
   });
 
   it('al completar el pago total marca la reservación como FINALIZADA', async () => {
@@ -82,8 +84,12 @@ describe('CreateReservationDepositHandler', () => {
     prisma.reservation.findFirst.mockResolvedValue(reservation());
     prisma.reservationDeposit.aggregate.mockResolvedValue(deposited('300.00'));
 
-    await expect(handler.execute(command(250))).rejects.toThrow(BadRequestException);
-    await expect(handler.execute(command(250))).rejects.toThrow('Saldo pendiente: Q200');
+    await expect(handler.execute(command(250))).rejects.toThrow(
+      BadRequestException,
+    );
+    await expect(handler.execute(command(250))).rejects.toThrow(
+      'Saldo pendiente: Q200',
+    );
     expect(prisma.reservationDeposit.create).not.toHaveBeenCalled();
     expect(prisma.reservation.update).not.toHaveBeenCalled();
   });
@@ -91,7 +97,9 @@ describe('CreateReservationDepositHandler', () => {
   it('lanza NotFoundException si la reservación no existe', async () => {
     prisma.reservation.findFirst.mockResolvedValue(null);
 
-    await expect(handler.execute(command(100))).rejects.toThrow(NotFoundException);
+    await expect(handler.execute(command(100))).rejects.toThrow(
+      NotFoundException,
+    );
     expect(prisma.reservationDeposit.aggregate).not.toHaveBeenCalled();
     expect(prisma.reservationDeposit.create).not.toHaveBeenCalled();
   });
@@ -101,16 +109,23 @@ describe('CreateReservationDepositHandler', () => {
     async (status) => {
       prisma.reservation.findFirst.mockResolvedValue(reservation({ status }));
 
-      await expect(handler.execute(command(100))).rejects.toThrow(BadRequestException);
+      await expect(handler.execute(command(100))).rejects.toThrow(
+        BadRequestException,
+      );
       await expect(handler.execute(command(100))).rejects.toThrow(status);
       expect(prisma.reservationDeposit.create).not.toHaveBeenCalled();
     },
   );
 
-  it.each(['PENDIENTE', 'CONFIRMADA'])('permite abonos si la reservación está %s', async (status) => {
-    prisma.reservation.findFirst.mockResolvedValue(reservation({ status }));
-    prisma.reservationDeposit.aggregate.mockResolvedValue(deposited('0'));
+  it.each(['PENDIENTE', 'CONFIRMADA'])(
+    'permite abonos si la reservación está %s',
+    async (status) => {
+      prisma.reservation.findFirst.mockResolvedValue(reservation({ status }));
+      prisma.reservationDeposit.aggregate.mockResolvedValue(deposited('0'));
 
-    await expect(handler.execute(command(100))).resolves.toMatchObject({ statusCode: 201 });
-  });
+      await expect(handler.execute(command(100))).resolves.toMatchObject({
+        statusCode: 201,
+      });
+    },
+  );
 });

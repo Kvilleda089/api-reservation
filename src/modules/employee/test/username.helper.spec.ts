@@ -1,4 +1,4 @@
-import { generateUsername } from "../common/helper/username.helper";
+import { generateUsername } from '../common/helper/username.helper';
 
 describe('generateUsername', () => {
   afterEach(() => jest.restoreAllMocks());

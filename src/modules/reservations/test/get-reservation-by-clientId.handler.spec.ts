@@ -3,7 +3,6 @@ import { createPrismaMock, PrismaMock } from 'test/helpers/prisma.mock';
 import { GetReservationByClientIdHandler } from '../query/handler/get-reservation-by-clientId.handler';
 import { GetReservationByClientIdQuery } from '../query/imp/get-reservation-by-clientId.query';
 
-
 jest.mock('src/database/prisma.service', () => ({
   PrismaService: class {},
 }));
@@ -22,9 +21,13 @@ describe('GetReservationByClientIdHandler', () => {
     prisma.reservation.count.mockResolvedValue(1);
     prisma.reservation.findMany.mockResolvedValue(reservations);
 
-    const result = await handler.execute(new GetReservationByClientIdQuery('c1', {}));
+    const result = await handler.execute(
+      new GetReservationByClientIdQuery('c1', {}),
+    );
 
-    expect(prisma.reservation.count).toHaveBeenCalledWith({ where: { clientId: 'c1' } });
+    expect(prisma.reservation.count).toHaveBeenCalledWith({
+      where: { clientId: 'c1' },
+    });
     expect(prisma.reservation.findMany).toHaveBeenCalledWith({
       where: { clientId: 'c1' },
       skip: 0,
@@ -49,7 +52,12 @@ describe('GetReservationByClientIdHandler', () => {
     expect(prisma.reservation.findMany).toHaveBeenCalledWith(
       expect.objectContaining({ skip: 5, take: 5 }),
     );
-    expect(result.pagination).toEqual({ page: 2, limit: 5, totalRecords: 12, lastPage: 3 });
+    expect(result.pagination).toEqual({
+      page: 2,
+      limit: 5,
+      totalRecords: 12,
+      lastPage: 3,
+    });
   });
 
   it('lanza NotFoundException si el cliente no tiene reservaciones', async () => {
@@ -64,8 +72,8 @@ describe('GetReservationByClientIdHandler', () => {
   it('relanza errores inesperados', async () => {
     prisma.reservation.count.mockRejectedValue(new Error('db caída'));
 
-    await expect(handler.execute(new GetReservationByClientIdQuery('c1', {}))).rejects.toThrow(
-      'db caída',
-    );
+    await expect(
+      handler.execute(new GetReservationByClientIdQuery('c1', {})),
+    ).rejects.toThrow('db caída');
   });
 });

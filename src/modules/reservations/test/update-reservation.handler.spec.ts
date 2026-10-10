@@ -5,7 +5,6 @@ import { UpdateReservationHandler } from '../command/handler/update-reservation.
 import { UpdateReservationCommand } from '../command/impl/update-reservation.command';
 import { GetReservationCheckoutAvailableQuery } from '../query/imp/get-reservation-checkout-available.query';
 
-
 jest.mock('src/database/prisma.service', () => ({
   PrismaService: class {},
 }));
@@ -31,14 +30,19 @@ describe('UpdateReservationHandler', () => {
     prisma = createPrismaMock();
     queryBus = { execute: jest.fn().mockResolvedValue({ data: [] }) }; // horario libre
     prisma.reservation.findFirst.mockResolvedValue(stored);
-    prisma.reservation.update.mockImplementation(async ({ data }) => ({ id: 'res-1', ...data }));
+    prisma.reservation.update.mockImplementation(async ({ data }) => ({
+      id: 'res-1',
+      ...data,
+    }));
     handler = new UpdateReservationHandler(prisma as any, queryBus as any);
   });
 
   it('lanza NotFoundException si la reservación no existe', async () => {
     prisma.reservation.findFirst.mockResolvedValue(null);
 
-    await expect(run({ status: 'CONFIRMADA' })).rejects.toThrow(NotFoundException);
+    await expect(run({ status: 'CONFIRMADA' })).rejects.toThrow(
+      NotFoundException,
+    );
     expect(prisma.reservation.update).not.toHaveBeenCalled();
   });
 
@@ -77,14 +81,20 @@ describe('UpdateReservationHandler', () => {
   });
 
   it.each([
-    ['reservationDate', { reservationDate: new Date('2026-10-25T00:00:00.000Z') }],
+    [
+      'reservationDate',
+      { reservationDate: new Date('2026-10-25T00:00:00.000Z') },
+    ],
     ['reservationResource', { reservationResource: 'SALON' }],
     ['reservedHours', { reservedHours: 3 }],
-  ])('un cambio en %s dispara la validación de disponibilidad', async (_name, data) => {
-    await run(data);
+  ])(
+    'un cambio en %s dispara la validación de disponibilidad',
+    async (_name, data) => {
+      await run(data);
 
-    expect(queryBus.execute).toHaveBeenCalledTimes(1);
-  });
+      expect(queryBus.execute).toHaveBeenCalledTimes(1);
+    },
+  );
 
   it('lanza ConflictException si el nuevo horario está ocupado y no actualiza', async () => {
     queryBus.execute.mockResolvedValue({ data: [{ id: 'otra-reserva' }] });
@@ -102,16 +112,25 @@ describe('UpdateReservationHandler', () => {
 
   it('traduce el error P2025 de Prisma a NotFoundException', async () => {
     prisma.reservation.update.mockRejectedValue(
-      new Prisma.PrismaClientKnownRequestError('x', { code: 'P2025', clientVersion: 'test' }),
+      new Prisma.PrismaClientKnownRequestError('x', {
+        code: 'P2025',
+        clientVersion: 'test',
+      }),
     );
 
-    await expect(run({ status: 'CONFIRMADA' })).rejects.toThrow(NotFoundException);
+    await expect(run({ status: 'CONFIRMADA' })).rejects.toThrow(
+      NotFoundException,
+    );
   });
 
+  it.failing(
+    'no marca conflicto cuando la única coincidencia es la misma reservación',
+    async () => {
+      queryBus.execute.mockResolvedValue({ data: [stored] });
 
-  it.failing('no marca conflicto cuando la única coincidencia es la misma reservación', async () => {
-    queryBus.execute.mockResolvedValue({ data: [stored] });
-
-    await expect(run({ reservedHours: 3 })).resolves.toMatchObject({ statusCode: 200 });
-  });
+      await expect(run({ reservedHours: 3 })).resolves.toMatchObject({
+        statusCode: 200,
+      });
+    },
+  );
 });

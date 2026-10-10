@@ -3,8 +3,6 @@ import { createPrismaMock, PrismaMock } from 'test/helpers/prisma.mock';
 import { GetOneEmployeeByFiltersHandler } from '../query/handler/get-one-employee-by-filters.handler';
 import { GetOneEmployeeByFiltersQuery } from '../query/impl';
 
-
-
 jest.mock('src/database/prisma.service', () => ({
   PrismaService: class {},
 }));
@@ -23,7 +21,10 @@ describe('GetOneEmployeeByFiltersHandler', () => {
     prisma.employee.findFirst.mockResolvedValue(employee);
 
     const result = await handler.execute(
-      new GetOneEmployeeByFiltersQuery({ firstName: 'kev', status: true } as any),
+      new GetOneEmployeeByFiltersQuery({
+        firstName: 'kev',
+        status: true,
+      } as any),
     );
 
     expect(prisma.employee.findFirst).toHaveBeenCalledWith({
@@ -40,12 +41,12 @@ describe('GetOneEmployeeByFiltersHandler', () => {
     prisma.employee.findFirst.mockResolvedValue(null);
     const filters: any = { email: 'nadie@example.com' };
 
-    await expect(handler.execute(new GetOneEmployeeByFiltersQuery(filters))).rejects.toThrow(
-      NotFoundException,
-    );
-    await expect(handler.execute(new GetOneEmployeeByFiltersQuery(filters))).rejects.toThrow(
-      JSON.stringify(filters),
-    );
+    await expect(
+      handler.execute(new GetOneEmployeeByFiltersQuery(filters)),
+    ).rejects.toThrow(NotFoundException);
+    await expect(
+      handler.execute(new GetOneEmployeeByFiltersQuery(filters)),
+    ).rejects.toThrow(JSON.stringify(filters));
   });
 
   it('relanza errores inesperados', async () => {

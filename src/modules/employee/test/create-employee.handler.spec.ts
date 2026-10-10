@@ -7,7 +7,6 @@ import { createPrismaMock, PrismaMock } from 'test/helpers/prisma.mock';
 import { CreateEmployeeHandler } from '../command/handler/create-employee.handler';
 import { CreateEmployeeCommand } from '../command/impl';
 
-
 jest.mock('src/database/prisma.service', () => ({
   PrismaService: class {},
 }));
@@ -42,13 +41,16 @@ describe('CreateEmployeeHandler', () => {
     handler = new CreateEmployeeHandler(prisma as any);
   });
 
-  it('crea el empleado con contraseña hasheada y usuario generado', async () => {
+  t('crea el empleado con contraseña hasheada y usuario generado', async () => {
     const created = { id: 'emp-1', username: 'KV1234' };
     prisma.employee.create.mockResolvedValue(created);
 
     const result = await handler.execute(new CreateEmployeeCommand(dto));
 
-    const { password, ...rest } = dto;
+    const rest = Object.fromEntries(
+      Object.entries(dto).filter(([key]) => key !== 'password'),
+    );
+
     expect(hash).toHaveBeenCalledWith('Secret123', 10);
     expect(username).toHaveBeenCalledWith('Kevin', 'Villeda');
     expect(prisma.employee.create).toHaveBeenCalledWith({
@@ -61,7 +63,6 @@ describe('CreateEmployeeHandler', () => {
       data: created,
     });
   });
-
   it('nunca guarda la contraseña en texto plano', async () => {
     prisma.employee.create.mockResolvedValue({});
 
@@ -74,7 +75,9 @@ describe('CreateEmployeeHandler', () => {
   it('ignora el username enviado por el cliente y usa el generado', async () => {
     prisma.employee.create.mockResolvedValue({});
 
-    await handler.execute(new CreateEmployeeCommand({ ...dto, username: 'hacker' }));
+    await handler.execute(
+      new CreateEmployeeCommand({ ...dto, username: 'hacker' }),
+    );
 
     const { data } = prisma.employee.create.mock.calls[0][0];
     expect(data.username).toBe('KV1234');
@@ -82,15 +85,22 @@ describe('CreateEmployeeHandler', () => {
 
   it('devuelve 409 cuando el email/usuario/teléfono ya existe (P2002)', async () => {
     prisma.employee.create.mockRejectedValue(
-      new Prisma.PrismaClientKnownRequestError('dup', { code: 'P2002', clientVersion: 'test' }),
+      new Prisma.PrismaClientKnownRequestError('dup', {
+        code: 'P2002',
+        clientVersion: 'test',
+      }),
     );
 
-    await expect(handler.execute(new CreateEmployeeCommand(dto))).rejects.toThrow(ConflictException);
+    await expect(
+      handler.execute(new CreateEmployeeCommand(dto)),
+    ).rejects.toThrow(ConflictException);
   });
 
   it('relanza errores inesperados', async () => {
     prisma.employee.create.mockRejectedValue(new Error('db caída'));
 
-    await expect(handler.execute(new CreateEmployeeCommand(dto))).rejects.toThrow('db caída');
+    await expect(
+      handler.execute(new CreateEmployeeCommand(dto)),
+    ).rejects.toThrow('db caída');
   });
 });

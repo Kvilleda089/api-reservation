@@ -5,11 +5,9 @@ import { createPrismaMock, PrismaMock } from 'test/helpers/prisma.mock';
 import { UpdateEmployeeHandler } from '../command/handler/update-employee.handler';
 import { UpdateEmployeeCommand } from '../command/impl';
 
-
 jest.mock('src/database/prisma.service', () => ({
   PrismaService: class {},
 }));
-
 
 describe('UpdateEmployeeHandler', () => {
   let prisma: PrismaMock;
@@ -23,11 +21,18 @@ describe('UpdateEmployeeHandler', () => {
   it('actualiza el empleado existente y devuelve 200', async () => {
     const data: any = { firstName: 'Nuevo' };
     prisma.employee.findFirst.mockResolvedValue({ id: 'emp-1' });
-    prisma.employee.update.mockResolvedValue({ id: 'emp-1', firstName: 'Nuevo' });
+    prisma.employee.update.mockResolvedValue({
+      id: 'emp-1',
+      firstName: 'Nuevo',
+    });
 
-    const result = await handler.execute(new UpdateEmployeeCommand('emp-1', data));
+    const result = await handler.execute(
+      new UpdateEmployeeCommand('emp-1', data),
+    );
 
-    expect(prisma.employee.findFirst).toHaveBeenCalledWith({ where: { id: 'emp-1' } });
+    expect(prisma.employee.findFirst).toHaveBeenCalledWith({
+      where: { id: 'emp-1' },
+    });
     expect(prisma.employee.update).toHaveBeenCalledWith({
       where: { id: 'emp-1' },
       data,
@@ -52,7 +57,10 @@ describe('UpdateEmployeeHandler', () => {
   it('traduce P2025 de Prisma a NotFoundException', async () => {
     prisma.employee.findFirst.mockResolvedValue({ id: 'emp-1' });
     prisma.employee.update.mockRejectedValue(
-      new Prisma.PrismaClientKnownRequestError('x', { code: 'P2025', clientVersion: 'test' }),
+      new Prisma.PrismaClientKnownRequestError('x', {
+        code: 'P2025',
+        clientVersion: 'test',
+      }),
     );
 
     await expect(

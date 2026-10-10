@@ -3,13 +3,9 @@ import { createPrismaMock, PrismaMock } from 'test/helpers/prisma.mock';
 import { GetAllEmployeeHandler } from '../query/handler/get-all-employee.handler';
 import { GetAllEmployeeQuery } from '../query/impl';
 
-
-
-
 jest.mock('src/database/prisma.service', () => ({
   PrismaService: class {},
 }));
-
 
 describe('GetAllEmployeeHandler', () => {
   let prisma: PrismaMock;
@@ -66,6 +62,8 @@ describe('GetAllEmployeeHandler', () => {
   it('relanza errores inesperados', async () => {
     prisma.employee.count.mockRejectedValue(new Error('db caída'));
 
-    await expect(handler.execute(new GetAllEmployeeQuery({}))).rejects.toThrow('db caída');
+    await expect(handler.execute(new GetAllEmployeeQuery({}))).rejects.toThrow(
+      'db caída',
+    );
   });
 });
