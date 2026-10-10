@@ -4,3 +4,11 @@ src/prisma/ops.json linguist-generated
 src/prisma/migration.json linguist-generated
 migrations/snapshots/**/contract.json linguist-generated
 migrations/snapshots/**/contract.d.ts linguist-generated
+
+
+# Normalizar finales de línea
+*.ts text eol=lf
+*.js text eol=lf
+*.cjs text eol=lf
+*.mjs text eol=lf
+*.json text eol=lf
